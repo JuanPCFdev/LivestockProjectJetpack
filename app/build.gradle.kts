@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.gms.google-services")
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -59,6 +62,21 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    //Firebase
+    implementation(libs.firebase.bom)
+    implementation(libs.firebase.database.ktx)
+
+    //Dagger Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt("com.google.dagger:hilt-compiler:2.44.2")
+
+    //Navigation
+    implementation("androidx.navigation:navigation-compose:2.7.0")
+    androidTestImplementation("androidx.navigation:navigation-testing:2.7.0")
+
+    //Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
