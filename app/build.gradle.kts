@@ -64,17 +64,18 @@ dependencies {
     implementation(libs.androidx.material3)
 
     //Firebase
-    implementation(libs.firebase.bom)
-    implementation(libs.firebase.database.ktx)
+    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    //Real Time Database
+    implementation("com.google.firebase:firebase-database-ktx:20.0.3")
 
     //Dagger Hilt
-    implementation(libs.hilt.android)
-    implementation(libs.androidx.hilt.navigation.compose)
-    kapt("com.google.dagger:hilt-compiler:2.44.2")
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
 
-    //Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.0")
-    androidTestImplementation("androidx.navigation:navigation-testing:2.7.0")
+    //Navigation Compose
+    implementation("androidx.navigation:navigation-compose:2.8.0")
 
     //Testing
     testImplementation(libs.junit)

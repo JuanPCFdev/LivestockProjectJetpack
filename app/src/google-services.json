@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "235627218845",
+    "firebase_url": "https://proyecto-ganadero-a64db-default-rtdb.firebaseio.com",
+    "project_id": "proyecto-ganadero-a64db",
+    "storage_bucket": "proyecto-ganadero-a64db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:235627218845:android:cb72ae7486e0d0f3e59174",
+        "android_client_info": {
+          "package_name": "com.example.livestockjetpackcompose"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJLGWJ5aACMG7T5WQyyJK6GVWUGU715Ow"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
