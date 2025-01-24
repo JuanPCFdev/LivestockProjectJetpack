@@ -8,12 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.example.livestockjetpackcompose.ui.screens.login.LoginScreen
-import com.example.livestockjetpackcompose.ui.screens.user.EditUserScreen
-import com.example.livestockjetpackcompose.ui.screens.user.RegisterUserScreen
-import com.example.livestockjetpackcompose.ui.screens.user.UserInformation
+import com.example.livestockjetpackcompose.core.navigation.NavigationWrapper
 import com.example.livestockjetpackcompose.ui.theme.LivestockJetpackComposeTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             LivestockJetpackComposeTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginScreen(Modifier.padding(innerPadding))
+                    NavigationWrapper(Modifier.padding(innerPadding))
                 }
             }
         }

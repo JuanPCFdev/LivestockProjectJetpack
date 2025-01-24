@@ -8,21 +8,45 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.livestockjetpackcompose.ui.ButtonCustom
-import com.example.livestockjetpackcompose.ui.ButtonType
-import com.example.livestockjetpackcompose.ui.Footer
-import com.example.livestockjetpackcompose.ui.Title
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.livestockjetpackcompose.ui.utils.ButtonCustom
+import com.example.livestockjetpackcompose.ui.utils.ButtonType
+import com.example.livestockjetpackcompose.ui.utils.Footer
+import com.example.livestockjetpackcompose.ui.utils.Title
 import com.example.livestockjetpackcompose.ui.theme.background_app
+import com.example.livestockjetpackcompose.ui.utils.OutlinedTextFieldCustom
+import com.example.livestockjetpackcompose.ui.utils.TextFieldType
+import com.example.livestockjetpackcompose.ui.viewmodels.user.EditUserViewModel
 
 @Composable
-fun EditUserScreen(modifier: Modifier) {
+fun EditUserScreen(
+    modifier: Modifier,
+    userKey: String,
+    onEditUserDone: () -> Unit,
+    viewModel: EditUserViewModel = hiltViewModel()
+) {
+
+    val name = viewModel.name.collectAsState()
+    val phone = viewModel.phone.collectAsState()
+    val password = viewModel.password.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(userKey) {
+        viewModel.getUserData(userKey)
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -31,46 +55,84 @@ fun EditUserScreen(modifier: Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Title(Modifier.weight(1f), "Example User Name")
-        Body(Modifier.weight(2f))
-        EditButton(Modifier.weight(1f))
+        Body(
+            modifier = Modifier.weight(2f),
+            name = name.value,
+            phone = phone.value,
+            password = password.value,
+            onNameChange = { newName -> viewModel.onNameChange(newName) },
+            onPhoneChange = { newPhone -> viewModel.onPhoneChange(newPhone) },
+            onPasswordChange = { newPassword -> viewModel.onPasswordChange(newPassword) }
+        )
+        EditButton(
+            modifier = Modifier.weight(1f),
+            onEditDone = {
+                viewModel.editUser(
+                    userKey = userKey,
+                    onEditUserDone = { onEditUserDone() }
+                )
+            }
+        )
+
+        when (uiState) {
+            is EditUserViewModel.UiState.Loading -> CircularProgressIndicator()
+            is EditUserViewModel.UiState.Error -> Text(
+                text = (uiState as EditUserViewModel.UiState.Error).message,
+                color = Color.Red,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+
+            else -> Unit
+        }
+
         Footer(Modifier.weight(1f))
     }
 }
 
 @Composable
-private fun Body(modifier: Modifier) {
+private fun Body(
+    modifier: Modifier,
+    name: String,
+    phone: String,
+    password: String,
+    onNameChange: (String) -> Unit,
+    onPhoneChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit
+) {
     Column(modifier = modifier, verticalArrangement = Arrangement.Center) {
-        Slot("Name", "User123")
-        Slot("Phone", "123456789")
-    }
-}
-
-@Composable
-private fun Slot(title: String, content: String) {
-    Column(modifier = Modifier.padding(vertical = 5.dp)) {
-        Text(
-            text = title,
-            fontWeight = FontWeight.Bold,
-            fontSize = 25.sp,
-            modifier = Modifier.padding(5.dp)
+        OutlinedTextFieldCustom(
+            TextFieldType.TEXT,
+            placeHolder = "User name",
+            text = name,
+            onValueChange = onNameChange
         )
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = content,
-                fontWeight = FontWeight.Bold,
-                fontSize = 25.sp,
-                modifier = Modifier.padding(10.dp)
-            )
-        }
+
+        OutlinedTextFieldCustom(
+            TextFieldType.TEXT,
+            placeHolder = "User phone",
+            text = phone,
+            onValueChange = onPhoneChange
+        )
+
+        OutlinedTextFieldCustom(
+            TextFieldType.TEXT,
+            placeHolder = "Password",
+            text = password,
+            onValueChange = onPasswordChange
+        )
     }
 }
 
 @Composable
-private fun EditButton(modifier: Modifier) {
+private fun EditButton(modifier: Modifier, onEditDone: () -> Unit) {
     Box(modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-        ButtonCustom(ButtonType.SPECIAL,"Edit")
+        Column(modifier = Modifier.fillMaxSize()) {
+            ButtonCustom(ButtonType.SPECIAL, "Save Changes") {
+                onEditDone()
+            }
+            ButtonCustom(ButtonType.DANGER, "Delete User") {
+                //Ultima implementación de la app
+            }
+        }
     }
 }

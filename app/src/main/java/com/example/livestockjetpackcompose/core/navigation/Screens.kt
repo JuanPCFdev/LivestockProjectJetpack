@@ -1,4 +1,90 @@
 package com.example.livestockjetpackcompose.core.navigation
 
-class Screens {
-}
+import kotlinx.serialization.Serializable
+
+@Serializable
+object Login
+
+@Serializable
+data class ListFarm(
+    val userKey: String
+)
+
+@Serializable
+object RegisterUser
+
+@Serializable
+data class RegisterFarm(
+    val userKey: String
+)
+
+@Serializable
+data class HomePage(
+    val userKey: String,
+    val farmKey: String
+)
+
+@Serializable
+data class EditFarm(
+    val userKey: String,
+    val farmKey: String
+)
+
+@Serializable
+data class EditUser(
+    val userKey: String
+)
+
+@Serializable
+data class CowHomePage(
+    val userKey: String,
+    val farmKey: String
+)
+
+@Serializable
+data class FinanceHome(
+    val userKey: String,
+    val farmKey: String
+)
+
+@Serializable
+data class BreedingHomeCow(
+    val userKey: String,
+    val farmKey: String
+)
+
+@Serializable
+data class LiftingHomeCow(
+    val userKey: String,
+    val farmKey: String
+)
+
+@Serializable
+data class CorralHomeCow(
+    val userKey: String,
+    val farmKey: String
+)
+
+@Serializable
+data class DeadCowHome(
+    val userKey: String,
+    val farmKey: String
+)
+
+@Serializable
+data class SoldCowHome(
+    val userKey: String,
+    val farmKey: String
+)
+
+@Serializable
+data class RegisterLiftingCow(
+    val userKey: String,
+    val farmKey: String
+)
+
+@Serializable
+data class RegisterBreedingCow(
+    val userKey: String,
+    val farmKey: String
+)

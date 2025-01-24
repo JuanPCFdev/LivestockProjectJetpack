@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.jetbrainsKotlinSerialization)
     id("com.google.gms.google-services")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
@@ -12,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.livestockjetpackcompose"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -63,19 +64,30 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    //YCharts
+    implementation(libs.ycharts)
+
     //Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
-    implementation("com.google.firebase:firebase-analytics")
+    implementation(platform(libs.firebase.bom.v3370))
+    implementation(libs.firebase.analytics)
     //Real Time Database
-    implementation("com.google.firebase:firebase-database-ktx:20.0.3")
+    implementation(libs.firebase.database)
 
     //Dagger Hilt
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation(libs.hilt.android.v2511)
+    implementation(libs.androidx.hilt.navigation.compose.v120)
+    kapt(libs.hilt.android.compiler)
 
     //Navigation Compose
-    implementation("androidx.navigation:navigation-compose:2.8.0")
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
+
+    //Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
+    //Swipe
+    implementation(libs.swipe)
 
     //Testing
     testImplementation(libs.junit)

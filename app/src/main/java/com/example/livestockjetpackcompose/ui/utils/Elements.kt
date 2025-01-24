@@ -1,4 +1,4 @@
-package com.example.livestockjetpackcompose.ui
+package com.example.livestockjetpackcompose.ui.utils
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -118,7 +118,11 @@ fun OutlinedTextFieldCustom(
         TextFieldType.NUMBER -> {
             OutlinedTextField(
                 value = text,
-                onValueChange = { onValueChange(it) },
+                onValueChange = {
+                    if (it.all { char -> char.isDigit() }) {
+                        onValueChange(it)
+                    }
+                },
                 enabled = true,
                 modifier = Modifier
                     .fillMaxWidth()

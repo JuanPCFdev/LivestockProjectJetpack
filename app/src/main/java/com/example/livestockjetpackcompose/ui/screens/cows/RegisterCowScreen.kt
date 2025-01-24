@@ -1,4 +1,4 @@
-package com.example.livestockjetpackcompose.ui.screens.cows.lifting
+package com.example.livestockjetpackcompose.ui.screens.cows
 
 import android.app.DatePickerDialog
 import android.content.Context
@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,6 +46,8 @@ import com.example.livestockjetpackcompose.ui.utils.Title
 import com.example.livestockjetpackcompose.ui.theme.background_app
 import com.example.livestockjetpackcompose.ui.theme.border_text_field
 import com.example.livestockjetpackcompose.ui.viewmodels.cows.RegisterCowViewModel
+import com.example.livestockjetpackcompose.ui.viewmodels.farm.RegisterFarmViewModel.UiState
+import com.example.livestockjetpackcompose.ui.viewmodels.user.EditUserViewModel
 import java.util.Calendar
 
 @Composable
@@ -53,6 +56,7 @@ fun RegisterCowScreen(
     userKey: String,
     farmKey: String,
     cowType: Boolean,
+    onRegisterCowDone: () -> Unit,
     viewModel: RegisterCowViewModel = hiltViewModel()
 ) {
 
@@ -66,8 +70,9 @@ fun RegisterCowScreen(
     val markingFather = viewModel.markingFather.collectAsState()
     val markingMother = viewModel.markingMother.collectAsState()
     val castrated = viewModel.castrated.collectAsState()
-    val context = LocalContext.current
+    val uiState by viewModel.uiState.collectAsState()
     val cost = viewModel.cost.collectAsState()
+    val context = LocalContext.current
 
     Column(
         modifier = modifier
@@ -82,6 +87,23 @@ fun RegisterCowScreen(
         } else {
             Title(Modifier.weight(1f), "Registar Ganado de Levante")
         }
+
+        when (uiState) {
+            is RegisterCowViewModel.UiState.Loading -> {
+                CircularProgressIndicator()
+            }
+
+            is RegisterCowViewModel.UiState.Error -> Text(
+                text = (uiState as UiState.Error).message,
+                color = Color.Red,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+
+            else -> {
+                Unit
+            }
+        }
+
         BodyRegisterCow(
             modifier = Modifier.weight(4f),
             cowType = cowType,
@@ -95,7 +117,7 @@ fun RegisterCowScreen(
             markingFather = markingFather.value,
             markingMother = markingMother.value,
             castrated = castrated.value,
-            cost = cost,
+            cost = cost.value,
             onMarkingChange = { newMarking -> viewModel.onMarkingChange(newMarking) },
             onBirthdateChange = { newBirthdate -> viewModel.onBirthdateChange(newBirthdate) },
             onWeightChange = { newWeight -> viewModel.onWeightChange(newWeight) },
@@ -117,7 +139,16 @@ fun RegisterCowScreen(
             onCostChange = { newCost -> viewModel.onCostChange(newCost) },
             context = context
         )
-        ConfirmButton(Modifier.weight(1f))
+        ConfirmButton(Modifier.weight(1f)) {
+            viewModel.registerNewCow(
+                userKey = userKey,
+                farmKey = farmKey,
+                onRegisterCowDone = {
+                    onRegisterCowDone()
+                },
+                type = cowType
+            )
+        }
         Footer(Modifier.weight(1f))
     }
 }
@@ -243,10 +274,10 @@ private fun CheckBoxCastratedCow(castrated: Boolean, onCastratedChange: (Boolean
 }
 
 @Composable
-private fun ConfirmButton(modifier: Modifier) {
+private fun ConfirmButton(modifier: Modifier, onRegisterCow: () -> Unit) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         ButtonCustom(ButtonType.SPECIAL, "Registrar Vaca") {
-
+            onRegisterCow()
         }
     }
 }
