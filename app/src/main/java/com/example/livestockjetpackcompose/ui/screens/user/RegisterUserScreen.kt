@@ -1,4 +1,4 @@
-package com.example.livestockjetpackcompose.ui.screens.login
+package com.example.livestockjetpackcompose.ui.screens.user
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,44 +16,41 @@ import com.example.livestockjetpackcompose.ui.Footer
 import com.example.livestockjetpackcompose.ui.OutlinedTextFieldCustom
 import com.example.livestockjetpackcompose.ui.TextFieldType
 import com.example.livestockjetpackcompose.ui.Title
-import com.example.livestockjetpackcompose.ui.theme.*
+import com.example.livestockjetpackcompose.ui.theme.background_app
 
 @Composable
-fun LoginScreen(modifier: Modifier) {
+fun RegisterUserScreen(modifier: Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(color = background_app)
+            .background(background_app)
             .padding(45.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Title(Modifier.weight(1f), "Welcome \n Sign In to continue")
-        Body(Modifier.weight(3f))
+        Title(Modifier.weight(1f), "Register")
+        Body(Modifier.weight(4f))
+        RegisterUserButtons(Modifier.weight(2f))
         Footer(Modifier.weight(1f))
     }
 }
 
 @Composable
 private fun Body(modifier: Modifier) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        OutlinedTextFieldCustom(TextFieldType.TEXT, "User")
-        OutlinedTextFieldCustom(TextFieldType.PASSWORD, "Password")
-        LoginScreenButtons()
+    Column(modifier = modifier.fillMaxWidth()) {
+        OutlinedTextFieldCustom(TextFieldType.TEXT,"Name")
+        OutlinedTextFieldCustom(TextFieldType.NUMBER,"Phone")
+        OutlinedTextFieldCustom(TextFieldType.PASSWORD,"Password")
+        OutlinedTextFieldCustom(TextFieldType.PASSWORD,"ConfirmPassword")
     }
 }
 
 @Composable
-private fun LoginScreenButtons() {
+private fun RegisterUserButtons(modifier: Modifier) {
     Column(
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.padding(vertical = 15.dp)
+        modifier = modifier.padding(vertical = 15.dp)
     ) {
-        ButtonCustom(ButtonType.SPECIAL, "Login")
-        ButtonCustom(ButtonType.SIMPLE, "Register")
-        ButtonCustom(ButtonType.SIMPLE, "¿How to login?")
+        ButtonCustom(ButtonType.SIMPLE,"I'm already registered")
+        ButtonCustom(ButtonType.SPECIAL,"Register")
     }
 }

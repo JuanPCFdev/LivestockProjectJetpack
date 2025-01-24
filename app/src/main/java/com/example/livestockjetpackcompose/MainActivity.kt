@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.example.livestockjetpackcompose.ui.screens.login.LoginScreen
+import com.example.livestockjetpackcompose.ui.screens.user.EditUserScreen
+import com.example.livestockjetpackcompose.ui.screens.user.RegisterUserScreen
+import com.example.livestockjetpackcompose.ui.screens.user.UserInformation
 import com.example.livestockjetpackcompose.ui.theme.LivestockJetpackComposeTheme
 
 class MainActivity : ComponentActivity() {

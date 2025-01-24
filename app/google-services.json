@@ -1,14 +1,14 @@
 {
   "project_info": {
-    "project_number": "235627218845",
-    "firebase_url": "https://proyecto-ganadero-a64db-default-rtdb.firebaseio.com",
-    "project_id": "proyecto-ganadero-a64db",
-    "storage_bucket": "proyecto-ganadero-a64db.appspot.com"
+    "project_number": "546137195837",
+    "firebase_url": "https://livestockjetpack-default-rtdb.firebaseio.com",
+    "project_id": "livestockjetpack",
+    "storage_bucket": "livestockjetpack.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:235627218845:android:cb72ae7486e0d0f3e59174",
+        "mobilesdk_app_id": "1:546137195837:android:5c2c458840eccb3a317154",
         "android_client_info": {
           "package_name": "com.example.livestockjetpackcompose"
         }
@@ -16,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDJLGWJ5aACMG7T5WQyyJK6GVWUGU715Ow"
+          "current_key": "AIzaSyA_nTfult1_9tk89DJ6j_w8iM9VwaQ86aQ"
         }
       ],
       "services": {
