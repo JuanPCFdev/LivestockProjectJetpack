@@ -22,4 +22,9 @@ class CattleRepositoryImpl @Inject constructor(
     override suspend fun registerNewCow(userKey: String, farmKey: String, cow: Cattle) {
         firebaseDataSource.registerNewCow(userKey, farmKey, cow)
     }
+
+    override suspend fun deleteCow(userKey: String, farmKey: String, cowKey: String) {
+        firebaseDataSource.deleteCow(userKey, farmKey, cowKey)
+    }
+
 }

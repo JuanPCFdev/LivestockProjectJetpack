@@ -73,12 +73,12 @@ fun ListFarmScreen(
             else -> Unit
         }
         BodyItemsList(
-            Modifier.weight(6f),
-            farms.value,
-            farmKeys.value,
-            navigateToHomePage,
-            userKey,
-            viewModel
+            modifier = Modifier.weight(6f),
+            farms = farms.value,
+            farmKeys = farmKeys.value,
+            farmSelected = navigateToHomePage,
+            userKey = userKey,
+            viewModel = viewModel
         )
         RegisterFarmButton(Modifier.weight(1f)) {
             navigateToRegisterFarm(userKey)

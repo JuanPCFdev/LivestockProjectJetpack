@@ -17,4 +17,5 @@ interface FirebaseDataSource {
     suspend fun editFarm(farm: Farm, userKey: String, farmKey: String)
     suspend fun getFarmCows(userKey: String, farmKey: String, callback: (List<Cattle>?, List<String>?) -> Unit)
     suspend fun registerNewCow(userKey: String, farmKey: String, cow:Cattle)
+    suspend fun deleteCow(userKey: String, farmKey: String, cowKey:String)
 }

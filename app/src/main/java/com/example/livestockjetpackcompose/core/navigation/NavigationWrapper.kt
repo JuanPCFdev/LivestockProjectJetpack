@@ -217,6 +217,9 @@ fun NavigationWrapper(modifier: Modifier) {
                             farmKey = navItems.farmKey
                         )
                     )
+                },
+                navigateToCowsResume = { cowKey ->
+
                 }
             )
         }
@@ -242,6 +245,9 @@ fun NavigationWrapper(modifier: Modifier) {
                             farmKey = navItems.farmKey
                         )
                     )
+                },
+                navigateToCowsResume = { cowKey ->
+
                 }
             )
         }
@@ -267,6 +273,9 @@ fun NavigationWrapper(modifier: Modifier) {
                             farmKey = navItems.farmKey
                         )
                     )
+                },
+                navigateToCowsResume = { cowKey ->
+
                 }
             )
         }
@@ -292,6 +301,9 @@ fun NavigationWrapper(modifier: Modifier) {
                             farmKey = navItems.farmKey
                         )
                     )
+                },
+                navigateToCowsResume = { cowKey ->
+
                 }
             )
         }
@@ -318,6 +330,9 @@ fun NavigationWrapper(modifier: Modifier) {
                             farmKey = navItems.farmKey
                         )
                     )
+                },
+                navigateToCowsResume = { cowKey ->
+
                 }
             )
         }

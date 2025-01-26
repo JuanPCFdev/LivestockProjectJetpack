@@ -152,9 +152,9 @@ class RegisterCowViewModel @Inject constructor(
             _uiState.value = UiState.Loading
 
             val cowType = if (type) {
-                "Cria"
+                "breeading"
             } else {
-                "levante"
+                "lifting"
             }
 
             if (validateInfoCow()) {

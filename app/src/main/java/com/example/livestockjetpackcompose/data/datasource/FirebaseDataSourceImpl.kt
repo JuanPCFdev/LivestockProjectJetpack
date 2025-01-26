@@ -300,7 +300,9 @@ class FirebaseDataSourceImpl @Inject constructor(
         farmKey: String,
         callback: (List<Cattle>?, List<String>?) -> Unit
     ) {
-        val userReference = myRef.child(userKey).child(USER_FARM_REF).child(USER_FARM_CATTLE_REF)
+        val userReference = myRef.child(userKey).child(USER_FARM_REF).child(farmKey).child(
+            USER_FARM_CATTLE_REF
+        )
 
         userReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -309,47 +311,27 @@ class FirebaseDataSourceImpl @Inject constructor(
                 val farmCattleKeysList = mutableListOf<String>()
 
                 for (cattleSnapshot in snapshot.children) {
+
                     val key = cattleSnapshot.key ?: ""
-                    val cattleData: Map<String, Any>? =
-                        cattleSnapshot.getValue(object :
-                            GenericTypeIndicator<Map<String, Any>>() {})
+                    val cattleData = cattleSnapshot.getValue(Cattle::class.java)
 
                     if (cattleData != null) {
 
-                        val cattle = Cattle(
-                            marking = cattleData["marking"] as? String ?: "",
-                            birthdate = cattleData["birthdate"] as? String ?: "",
-                            weight = cattleData["weight"].toString().toInt() as? Int ?: 0,
-                            age = cattleData["age"].toString().toInt() as? Int ?: 0,
-                            breed = cattleData["breed"] as? String ?: "",
-                            state = cattleData["state"] as? String ?: "",
-                            gender = cattleData["gender"] as? String ?: "",
-                            type = cattleData["type"] as? String ?: "",
-                            motherMark = cattleData["motherMark"] as? String ?: "",
-                            fatherMark = cattleData["fatherMark"] as? String ?: "",
-                            cost = cattleData["cost"].toString().toDouble() as? Double ?: 0.0,
-                            castrated = cattleData["castrated"].toString().toBoolean() as? Boolean
-                                ?: false,
-                            vaccines = cattleData["vaccines"] as? MutableList<Vaccine>
-                                ?: mutableListOf(),
-                            PLifting = cattleData["PLifting"] as? MutableList<LiftingPerformance>
-                                ?: mutableListOf(),
-                            PBreeding = cattleData["PBreeding"] as? MutableList<BreedingPerformance>
-                                ?: mutableListOf(),
-                            death = cattleData["Death"] as? DeathDetails ?: DeathDetails(),
-                            inseminationNews = cattleData["inseminationNews"] as? MutableList<Insemination>
-                                ?: mutableListOf()
-                        )
-
-                        farmCattleList.add(cattle)
+                        farmCattleList.add(cattleData)
                         farmCattleKeysList.add(key)
+
                     }
+
                 }
+
                 callback(farmCattleList, farmCattleKeysList)
+
             }
 
             override fun onCancelled(error: DatabaseError) {
+
                 callback(null, null)
+
             }
 
         })
@@ -391,4 +373,32 @@ class FirebaseDataSourceImpl @Inject constructor(
 
     }
 
+    override suspend fun deleteCow(userKey: String, farmKey: String, cowKey: String) {
+        val userReference = myRef.child(userKey)
+
+        userReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val existingUser = snapshot.getValue(User::class.java)
+
+                    val cattleRemove =
+                        existingUser?.farms?.get(farmKey.toInt())?.cattles?.get(cowKey.toInt())
+
+                    existingUser?.farms?.get(farmKey.toInt())?.cattles?.remove(cattleRemove)
+
+                    userReference.setValue(existingUser)
+
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.i(
+                    "Fallo al intentar eliminar vaca con key${cowKey}, en el usuario ${userKey}, en finca ${farmKey}",
+                    error.details
+                )
+            }
+
+        })
+
+    }
 }
