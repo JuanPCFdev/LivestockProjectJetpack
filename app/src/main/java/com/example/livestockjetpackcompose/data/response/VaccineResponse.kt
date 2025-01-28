@@ -12,7 +12,6 @@ data class VaccineResponse(
 ) {
     fun toDomain(): Vaccine {
         return Vaccine(
-            idVaccine = idVaccine,
             vaccineName = vaccineName,
             vaccineCost = vaccineCost,
             date = date,
