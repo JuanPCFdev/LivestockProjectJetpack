@@ -94,7 +94,7 @@ fun RegisterCowScreen(
             }
 
             is RegisterCowViewModel.UiState.Error -> Text(
-                text = (uiState as UiState.Error).message,
+                text = (uiState as RegisterCowViewModel.UiState.Error).message,
                 color = Color.Red,
                 modifier = Modifier.padding(top = 8.dp)
             )

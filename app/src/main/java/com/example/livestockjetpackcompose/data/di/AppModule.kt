@@ -8,6 +8,8 @@ import com.example.livestockjetpackcompose.data.repository.farm.FarmRepository
 import com.example.livestockjetpackcompose.data.repository.farm.FarmRepositoryImpl
 import com.example.livestockjetpackcompose.data.repository.user.UserRepository
 import com.example.livestockjetpackcompose.data.repository.user.UserRepositoryImpl
+import com.example.livestockjetpackcompose.data.repository.vaccine.VaccineRepository
+import com.example.livestockjetpackcompose.data.repository.vaccine.VaccineRepositoryImpl
 import com.google.firebase.database.FirebaseDatabase
 import dagger.Module
 import dagger.Provides
@@ -49,6 +51,14 @@ object AppModule {
         firebaseDataSource: FirebaseDataSource
     ): CattleRepository {
         return CattleRepositoryImpl(firebaseDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideVaccineRepository(
+        firebaseDataSource: FirebaseDataSource
+    ): VaccineRepository{
+        return VaccineRepositoryImpl(firebaseDataSource)
     }
 
 }

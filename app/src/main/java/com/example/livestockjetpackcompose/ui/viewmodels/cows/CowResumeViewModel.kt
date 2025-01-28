@@ -2,8 +2,11 @@ package com.example.livestockjetpackcompose.ui.viewmodels.cows
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.livestockjetpackcompose.domain.model.Cattle
-import com.example.livestockjetpackcompose.domain.usecase.RegisterNewCowUseCase
+import com.example.livestockjetpackcompose.domain.usecase.EditCowUseCase
+import com.example.livestockjetpackcompose.domain.usecase.GetCowDataUseCase
+import com.example.livestockjetpackcompose.domain.utils.CowTypeFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +18,9 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterCowViewModel @Inject constructor(
-    private val registerNewCowUseCase: RegisterNewCowUseCase
+class CowResumeViewModel @Inject constructor(
+    private val getCowDataUseCase: GetCowDataUseCase,
+    private val editCowUseCase: EditCowUseCase
 ) : ViewModel() {
 
     private val _marking = MutableStateFlow("")
@@ -54,6 +58,31 @@ class RegisterCowViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
     val uiState: StateFlow<UiState> get() = _uiState
+
+
+    fun getCowData(userKey: String, farmKey: String, cowKey: String) {
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading
+
+            getCowDataUseCase.getCowData(userKey, farmKey, cowKey) { cow ->
+                if (cow != null) {
+                    _marking.value = cow.marking
+                    _birthdate.value = cow.birthdate
+                    _weight.value = cow.weight.toString()
+                    _age.value = cow.age.toString()
+                    _breed.value = cow.breed
+                    _state.value = cow.state
+                    _sex.value = cow.gender
+                    _markingFather.value = cow.fatherMark
+                    _markingMother.value = cow.motherMark
+                    _castrated.value = cow.castrated
+                    _cost.value = cow.cost.toString()
+                }
+            }
+
+            _uiState.value = UiState.Idle
+        }
+    }
 
     fun onMarkingChange(newMarking: String) {
         if (newMarking.length < 10) {
@@ -142,51 +171,40 @@ class RegisterCowViewModel @Inject constructor(
         return if (edadEnMeses < 0) 0 else edadEnMeses
     }
 
-    fun registerNewCow(
-        userKey: String,
-        farmKey: String,
-        onRegisterCowDone: () -> Unit,
-        type: Boolean
-    ) {
+    fun editCow(userKey: String, farmKey: String, cowKey: String, cowType: String) {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-
-            val cowType = if (type) {
-                "breeading"
-            } else {
-                "lifting"
-            }
-
-            if (validateInfoCow()) {
-                var cost:Double = 0.0
-                if(_cost.value.isNotBlank()){
-                    cost = _cost.value.toDouble()
-                }
-
-                val cow = Cattle(
-                    marking = _marking.value,
-                    birthdate = _birthdate.value,
-                    weight = _weight.value.toInt(),
-                    age = _age.value.toInt(),
-                    breed = _breed.value,
-                    state = _state.value,
-                    gender = _sex.value,
-                    type = cowType,
-                    motherMark = _markingMother.value,
-                    fatherMark = _markingFather.value,
-                    cost = cost,
-                    castrated = _castrated.value
-                )
-
-                registerNewCowUseCase.registerNewCow(userKey, farmKey, cow)
-
-                delay(1000)
-                onRegisterCowDone()
-                _uiState.value = UiState.Idle
-            } else {
-                _uiState.value = UiState.Error("Se deben de llenar todos los campos obligatorios")
-            }
+            val newCow = createCow(cowType)
+            editCowUseCase.editCow(newCow, userKey, farmKey, cowKey)
+            delay(1000)
+            getCowData(userKey = userKey, farmKey = farmKey, cowKey = cowKey)
+            delay(500)
+            _uiState.value = UiState.Idle
         }
+    }
+
+    private fun createCow(cowType: String): Cattle {
+
+        var cost: Double = 0.0
+
+        if (_cost.value.isNotBlank()) {
+            cost = _cost.value.toDouble()
+        }
+
+        return Cattle(
+            marking = _marking.value,
+            birthdate = _birthdate.value,
+            weight = _weight.value.toInt(),
+            age = _age.value.toInt(),
+            breed = _breed.value,
+            state = _state.value,
+            gender = _sex.value,
+            type = cowType,
+            motherMark = _markingMother.value,
+            fatherMark = _markingFather.value,
+            cost = cost,
+            castrated = _castrated.value,
+        )
     }
 
     private fun validateInfoCow(): Boolean {
@@ -196,7 +214,7 @@ class RegisterCowViewModel @Inject constructor(
                         && _birthdate.value.isNotBlank()
                         && _breed.value.isNotBlank()
                         && _state.value.isNotBlank()
-                        && _weight.value.isNotBlank()
+                        && _cost.value.isNotBlank()
                 )
     }
 

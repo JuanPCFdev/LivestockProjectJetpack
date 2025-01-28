@@ -8,8 +8,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.livestockjetpackcompose.domain.utils.CowTypeFilter
 import com.example.livestockjetpackcompose.ui.screens.cows.CowHomeScreen
+import com.example.livestockjetpackcompose.ui.screens.cows.CowResumeScreen
 import com.example.livestockjetpackcompose.ui.screens.cows.MultiCowScreen
 import com.example.livestockjetpackcompose.ui.screens.cows.RegisterCowScreen
+import com.example.livestockjetpackcompose.ui.screens.cows.vaccine.RegisterVaccineScreen
+import com.example.livestockjetpackcompose.ui.screens.cows.vaccine.VaccineListScreen
 import com.example.livestockjetpackcompose.ui.screens.farm.EditFarmScreen
 import com.example.livestockjetpackcompose.ui.screens.farm.RegisterFarmScreen
 import com.example.livestockjetpackcompose.ui.screens.home.HomePageScreen
@@ -218,8 +221,15 @@ fun NavigationWrapper(modifier: Modifier) {
                         )
                     )
                 },
-                navigateToCowsResume = { cowKey ->
-
+                navigateToCowsResume = { cowKey, cowType ->
+                    navController.navigate(
+                        CowResume(
+                            userKey = navItems.userKey,
+                            farmKey = navItems.farmKey,
+                            cowKey = cowKey,
+                            cowType = cowType
+                        )
+                    )
                 }
             )
         }
@@ -246,8 +256,15 @@ fun NavigationWrapper(modifier: Modifier) {
                         )
                     )
                 },
-                navigateToCowsResume = { cowKey ->
-
+                navigateToCowsResume = { cowKey, cowType ->
+                    navController.navigate(
+                        CowResume(
+                            userKey = navItems.userKey,
+                            farmKey = navItems.farmKey,
+                            cowKey = cowKey,
+                            cowType = cowType
+                        )
+                    )
                 }
             )
         }
@@ -274,8 +291,15 @@ fun NavigationWrapper(modifier: Modifier) {
                         )
                     )
                 },
-                navigateToCowsResume = { cowKey ->
-
+                navigateToCowsResume = { cowKey, cowType ->
+                    navController.navigate(
+                        CowResume(
+                            userKey = navItems.userKey,
+                            farmKey = navItems.farmKey,
+                            cowKey = cowKey,
+                            cowType = cowType
+                        )
+                    )
                 }
             )
         }
@@ -302,8 +326,15 @@ fun NavigationWrapper(modifier: Modifier) {
                         )
                     )
                 },
-                navigateToCowsResume = { cowKey ->
-
+                navigateToCowsResume = { cowKey, cowType ->
+                    navController.navigate(
+                        CowResume(
+                            userKey = navItems.userKey,
+                            farmKey = navItems.farmKey,
+                            cowKey = cowKey,
+                            cowType = cowType
+                        )
+                    )
                 }
             )
         }
@@ -331,8 +362,15 @@ fun NavigationWrapper(modifier: Modifier) {
                         )
                     )
                 },
-                navigateToCowsResume = { cowKey ->
-
+                navigateToCowsResume = { cowKey, cowType ->
+                    navController.navigate(
+                        CowResume(
+                            userKey = navItems.userKey,
+                            farmKey = navItems.farmKey,
+                            cowKey = cowKey,
+                            cowType = cowType
+                        )
+                    )
                 }
             )
         }
@@ -361,6 +399,60 @@ fun NavigationWrapper(modifier: Modifier) {
                 farmKey = navItems.farmKey,
                 cowType = true,
                 onRegisterCowDone = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable<CowResume> { navBackStackEntry ->
+            val navItems = navBackStackEntry.toRoute<CowResume>()
+
+            CowResumeScreen(
+                modifier = modifier,
+                userKey = navItems.userKey,
+                farmKey = navItems.farmKey,
+                cowKey = navItems.cowKey,
+                cowTypeFilter = navItems.cowType,
+                navigateToVaccineListHome = {
+                    navController.navigate(
+                        VaccineHome(
+                            userKey = navItems.userKey,
+                            farmKey = navItems.farmKey,
+                            cowKey = navItems.cowKey
+                        )
+                    )
+                }
+            )
+
+        }
+
+        composable<VaccineHome> { navBackStackEntry ->
+            val navItems = navBackStackEntry.toRoute<VaccineHome>()
+            VaccineListScreen(
+                modifier = modifier,
+                userKey = navItems.userKey,
+                farmKey = navItems.farmKey,
+                cowKey = navItems.cowKey,
+                onNavigateToRegisterVaccine = {
+                    navController.navigate(
+                        RegisterVaccine(
+                            userKey = navItems.userKey,
+                            farmKey = navItems.farmKey,
+                            cowKey = navItems.cowKey
+                        )
+                    )
+                }
+            )
+        }
+
+        composable<RegisterVaccine> { navBackStackEntry ->
+            val navItems = navBackStackEntry.toRoute<RegisterVaccine>()
+            RegisterVaccineScreen(
+                modifier = modifier,
+                userKey = navItems.userKey,
+                farmKey = navItems.farmKey,
+                cowKey = navItems.cowKey,
+                onRegisterDone = {
                     navController.popBackStack()
                 }
             )

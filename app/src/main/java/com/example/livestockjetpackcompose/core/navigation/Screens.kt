@@ -1,5 +1,6 @@
 package com.example.livestockjetpackcompose.core.navigation
 
+import com.example.livestockjetpackcompose.domain.utils.CowTypeFilter
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -87,4 +88,26 @@ data class RegisterLiftingCow(
 data class RegisterBreedingCow(
     val userKey: String,
     val farmKey: String
+)
+
+@Serializable
+data class CowResume(
+    val userKey: String,
+    val farmKey: String,
+    val cowKey:String,
+    val cowType: CowTypeFilter
+)
+
+@Serializable
+data class VaccineHome(
+    val userKey: String,
+    val farmKey: String,
+    val cowKey: String
+)
+
+@Serializable
+data class RegisterVaccine(
+    val userKey: String,
+    val farmKey: String,
+    val cowKey: String
 )

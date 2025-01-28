@@ -27,4 +27,17 @@ class CattleRepositoryImpl @Inject constructor(
         firebaseDataSource.deleteCow(userKey, farmKey, cowKey)
     }
 
+    override suspend fun getCowData(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        callback: (Cattle?) -> Unit
+    ) {
+        firebaseDataSource.getSingleCowData(userKey, farmKey, cowKey, callback)
+    }
+
+    override suspend fun editCow(cow: Cattle, userKey: String, farmKey: String, cowKey: String) {
+        firebaseDataSource.editCow(cow, userKey, farmKey, cowKey)
+    }
+
 }

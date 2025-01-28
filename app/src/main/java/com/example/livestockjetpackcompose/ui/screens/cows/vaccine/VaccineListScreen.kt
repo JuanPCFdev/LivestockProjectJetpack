@@ -1,10 +1,9 @@
-package com.example.livestockjetpackcompose.ui.screens.cows
+package com.example.livestockjetpackcompose.ui.screens.cows.vaccine
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,110 +29,81 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.livestockjetpackcompose.R
-import com.example.livestockjetpackcompose.domain.model.Cattle
-import com.example.livestockjetpackcompose.domain.utils.CowTypeFilter
+import com.example.livestockjetpackcompose.domain.model.Vaccine
 import com.example.livestockjetpackcompose.ui.theme.background_app
 import com.example.livestockjetpackcompose.ui.utils.ButtonCustom
 import com.example.livestockjetpackcompose.ui.utils.ButtonType
 import com.example.livestockjetpackcompose.ui.utils.Title
-import com.example.livestockjetpackcompose.ui.viewmodels.cows.MultiCowViewModel
+import com.example.livestockjetpackcompose.ui.viewmodels.cows.vaccine.VaccineListViewModel
 import com.example.livestockjetpackcompose.ui.viewmodels.farm.ListFarmViewModel.UiState
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
-
 @Composable
-fun MultiCowScreen(
+fun VaccineListScreen(
     modifier: Modifier,
     userKey: String,
     farmKey: String,
-    cowFilter: CowTypeFilter,
-    navigateToRegisterLiftingCow: () -> Unit,
-    navigateToRegisterBreedingCow: () -> Unit,
-    navigateToCowsResume: (String, CowTypeFilter) -> Unit,
-    viewModel: MultiCowViewModel = hiltViewModel()
+    cowKey: String,
+    onNavigateToRegisterVaccine:()->Unit,
+    viewModel: VaccineListViewModel = hiltViewModel()
 ) {
 
-    val cows = viewModel.cows.collectAsState()
-    val cowsKeys = viewModel.cowsKeys.collectAsState()
+    val vaccines = viewModel.vaccines.collectAsState()
+    val keys = viewModel.keys.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(userKey) {
-        viewModel.loadUserFarmCows(userKey, farmKey, cowFilter)
+        viewModel.loadVaccines(userKey, farmKey, cowKey)
     }
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(color = background_app)
-            .padding(PaddingValues(start = 10.dp, end = 10.dp, bottom = 45.dp, top = 5.dp)),
+            .padding(vertical = 45.dp, horizontal = 30.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        Title(
-            modifier = Modifier.weight(1f),
-            title = when (cowFilter) {
-                CowTypeFilter.LIFTING -> "Ganado de Levante"
-                CowTypeFilter.BREEADING -> "Ganado de Cria"
-                CowTypeFilter.CORRAL -> "Ganado de Corral"
-                CowTypeFilter.DEAD -> "Ganado Muerto"
-                CowTypeFilter.SOLD -> "Ganado Vendido"
-            }
-        )
-
-        ItemsList(
-            modifier = Modifier.weight(5f),
-            cows = cows.value,
-            cowsKeys = cowsKeys.value,
-            cowSelected = { cowKey, cowType ->
-                navigateToCowsResume(cowKey, cowFilter)
-            },
-            userKey = userKey,
-            farmKey = farmKey,
-            cowType = cowFilter,
-            viewModel = viewModel
-        )
-
-        when (cowFilter) {
-            CowTypeFilter.LIFTING -> {
-                ButtonAction(Modifier.weight(1f), "Registrar Ganado de Levante") {
-                    navigateToRegisterLiftingCow()
-                }
-            }
-
-            CowTypeFilter.BREEADING -> {
-                ButtonAction(Modifier.weight(1f), "Registrar Ganado de Cria") {
-                    navigateToRegisterBreedingCow()
-                }
-            }
-
-            else -> Unit
-        }
-
+        Title(Modifier.weight(1f), "Vacunas Registradas")
         when (uiState) {
-            is MultiCowViewModel.UiState.Loading -> CircularProgressIndicator()
-            is MultiCowViewModel.UiState.Error -> Text(
-                text = (uiState as UiState.Error).message,
-                color = Color.Red,
-                modifier = Modifier.padding(top = 8.dp)
-            )
+            is VaccineListViewModel.UiState.Error -> {
+                Text(
+                    text = (uiState as UiState.Error).message,
+                    color = Color.Red,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
 
-            else -> Unit
+            is VaccineListViewModel.UiState.Loading -> CircularProgressIndicator()
+            else -> {
+                BodyVaccineList(
+                    modifier = Modifier.weight(7f),
+                    vaccines = vaccines.value,
+                    keys = keys.value,
+                    vaccineSelected = {},
+                    viewModel = viewModel,
+                    userKey = userKey,
+                    farmKey = farmKey,
+                    cowKey = cowKey
+                )
+                RegisterNewVaccineButton(Modifier.weight(2f)){
+                    onNavigateToRegisterVaccine()
+                }
+            }
         }
-
     }
 }
 
 @Composable
-private fun ItemsList(
+private fun BodyVaccineList(
     modifier: Modifier,
-    cows: List<Cattle>?,
-    cowsKeys: List<String>?,
-    cowSelected: (String, CowTypeFilter) -> Unit,
+    vaccines: List<Vaccine>?,
+    keys: List<String>?,
+    vaccineSelected: (String) -> Unit,
+    viewModel: VaccineListViewModel,
     userKey: String,
     farmKey: String,
-    cowType: CowTypeFilter,
-    viewModel: MultiCowViewModel
+    cowKey: String
 ) {
     LazyColumn(
         modifier = modifier
@@ -141,11 +111,11 @@ private fun ItemsList(
             .padding(vertical = 5.dp, horizontal = 8.dp)
             .background(background_app)
     ) {
-        if (cows != null && cowsKeys != null && cows.isNotEmpty()) {
-            val cowsWhitKeys = cows.zip(cowsKeys)
+        if (vaccines != null && keys != null) {
 
-            items(cowsWhitKeys) { (cow, cowKey) ->
+            val mixList = vaccines.zip(keys)
 
+            items(mixList) { (vaccine, key) ->
                 val swipeLeft = SwipeAction(
                     icon = {
                         Icon(
@@ -159,23 +129,17 @@ private fun ItemsList(
                     background = Color.Red,
                     isUndo = true,
                     onSwipe = {
-                        viewModel.deleteSelectedCow(
-                            userKey = userKey,
-                            farmKey = farmKey,
-                            cowKey = cowKey,
-                            cowFilter = cowType
-                        )
+                        viewModel.deleteSelectedVaccine(userKey, farmKey, cowKey, key)
                     }
                 )
 
                 SwipeableActionsBox(endActions = listOf(swipeLeft)) {
-                    ListItem(cowMarking = cow.marking) {
-                        cowSelected(cowKey, cowType)
+                    ListItem(vaccineName = vaccine.vaccineName) {
+                        vaccineSelected(key)
                     }
                 }
 
             }
-
         } else {
             item {
                 Text(
@@ -189,7 +153,7 @@ private fun ItemsList(
 }
 
 @Composable
-private fun ListItem(cowMarking: String, onClickedItem: () -> Unit) {
+private fun ListItem(vaccineName: String, onClickedItem: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -206,7 +170,7 @@ private fun ListItem(cowMarking: String, onClickedItem: () -> Unit) {
         ) {
             Text(
                 modifier = Modifier.padding(12.dp),
-                text = cowMarking,
+                text = vaccineName,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp
             )
@@ -214,12 +178,11 @@ private fun ListItem(cowMarking: String, onClickedItem: () -> Unit) {
     }
 }
 
-
 @Composable
-private fun ButtonAction(modifier: Modifier, text: String, onButtonClicked: () -> Unit) {
-    Box(modifier.fillMaxWidth()) {
-        ButtonCustom(ButtonType.SPECIAL, text) {
-            onButtonClicked()
+private fun RegisterNewVaccineButton(modifier: Modifier, onButtonPressed:()->Unit) {
+    Box(modifier = modifier.fillMaxSize()) {
+        ButtonCustom(ButtonType.SPECIAL, "Registrar nueva vacuna") {
+            onButtonPressed()
         }
     }
 }
