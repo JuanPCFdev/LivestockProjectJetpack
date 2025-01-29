@@ -11,6 +11,7 @@ import com.example.livestockjetpackcompose.ui.screens.cows.CowHomeScreen
 import com.example.livestockjetpackcompose.ui.screens.cows.CowResumeScreen
 import com.example.livestockjetpackcompose.ui.screens.cows.MultiCowScreen
 import com.example.livestockjetpackcompose.ui.screens.cows.RegisterCowScreen
+import com.example.livestockjetpackcompose.ui.screens.cows.vaccine.EditVaccineScreen
 import com.example.livestockjetpackcompose.ui.screens.cows.vaccine.RegisterVaccineScreen
 import com.example.livestockjetpackcompose.ui.screens.cows.vaccine.VaccineListScreen
 import com.example.livestockjetpackcompose.ui.screens.farm.EditFarmScreen
@@ -441,6 +442,16 @@ fun NavigationWrapper(modifier: Modifier) {
                             cowKey = navItems.cowKey
                         )
                     )
+                },
+                onVaccineSelected = { vaccineKey ->
+                    navController.navigate(
+                        EditVaccine(
+                            userKey = navItems.userKey,
+                            farmKey = navItems.farmKey,
+                            cowKey = navItems.cowKey,
+                            vaccineKey = vaccineKey
+                        )
+                    )
                 }
             )
         }
@@ -456,6 +467,22 @@ fun NavigationWrapper(modifier: Modifier) {
                     navController.popBackStack()
                 }
             )
+        }
+
+        composable<EditVaccine> { navBackStackEntry ->
+            val navItems = navBackStackEntry.toRoute<EditVaccine>()
+
+            EditVaccineScreen(
+                modifier = modifier,
+                userKey = navItems.userKey,
+                farmKey = navItems.farmKey,
+                cowKey = navItems.cowKey,
+                vaccineKey = navItems.vaccineKey,
+                onEditDone = {
+                    navController.popBackStack()
+                }
+            )
+
         }
 
     }

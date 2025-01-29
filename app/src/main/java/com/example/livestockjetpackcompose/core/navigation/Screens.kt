@@ -111,3 +111,11 @@ data class RegisterVaccine(
     val farmKey: String,
     val cowKey: String
 )
+
+@Serializable
+data class EditVaccine(
+    val userKey: String,
+    val farmKey: String,
+    val cowKey: String,
+    val vaccineKey:String
+)

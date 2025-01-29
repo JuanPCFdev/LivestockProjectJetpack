@@ -35,7 +35,6 @@ import com.example.livestockjetpackcompose.ui.utils.ButtonCustom
 import com.example.livestockjetpackcompose.ui.utils.ButtonType
 import com.example.livestockjetpackcompose.ui.utils.Title
 import com.example.livestockjetpackcompose.ui.viewmodels.cows.vaccine.VaccineListViewModel
-import com.example.livestockjetpackcompose.ui.viewmodels.farm.ListFarmViewModel.UiState
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -45,7 +44,8 @@ fun VaccineListScreen(
     userKey: String,
     farmKey: String,
     cowKey: String,
-    onNavigateToRegisterVaccine:()->Unit,
+    onNavigateToRegisterVaccine: () -> Unit,
+    onVaccineSelected:(String) -> Unit,
     viewModel: VaccineListViewModel = hiltViewModel()
 ) {
 
@@ -65,31 +65,30 @@ fun VaccineListScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Title(Modifier.weight(1f), "Vacunas Registradas")
+        BodyVaccineList(
+            modifier = Modifier.weight(7f),
+            vaccines = vaccines.value,
+            keys = keys.value,
+            vaccineSelected = onVaccineSelected,
+            viewModel = viewModel,
+            userKey = userKey,
+            farmKey = farmKey,
+            cowKey = cowKey
+        )
         when (uiState) {
             is VaccineListViewModel.UiState.Error -> {
                 Text(
-                    text = (uiState as UiState.Error).message,
+                    text = (uiState as VaccineListViewModel.UiState.Error).message,
                     color = Color.Red,
                     modifier = Modifier.padding(top = 8.dp)
                 )
             }
 
             is VaccineListViewModel.UiState.Loading -> CircularProgressIndicator()
-            else -> {
-                BodyVaccineList(
-                    modifier = Modifier.weight(7f),
-                    vaccines = vaccines.value,
-                    keys = keys.value,
-                    vaccineSelected = {},
-                    viewModel = viewModel,
-                    userKey = userKey,
-                    farmKey = farmKey,
-                    cowKey = cowKey
-                )
-                RegisterNewVaccineButton(Modifier.weight(2f)){
-                    onNavigateToRegisterVaccine()
-                }
-            }
+            else -> Unit
+        }
+        RegisterNewVaccineButton(Modifier.weight(2f)) {
+            onNavigateToRegisterVaccine()
         }
     }
 }
@@ -144,7 +143,7 @@ private fun BodyVaccineList(
             item {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Aun no hay vacas registradas de este tipo",
+                    text = "Aun no hay vacunas registradas de este tipo",
                     textAlign = TextAlign.Center
                 )
             }
@@ -179,7 +178,7 @@ private fun ListItem(vaccineName: String, onClickedItem: () -> Unit) {
 }
 
 @Composable
-private fun RegisterNewVaccineButton(modifier: Modifier, onButtonPressed:()->Unit) {
+private fun RegisterNewVaccineButton(modifier: Modifier, onButtonPressed: () -> Unit) {
     Box(modifier = modifier.fillMaxSize()) {
         ButtonCustom(ButtonType.SPECIAL, "Registrar nueva vacuna") {
             onButtonPressed()

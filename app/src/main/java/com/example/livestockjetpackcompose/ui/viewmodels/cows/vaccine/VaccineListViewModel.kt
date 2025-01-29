@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.livestockjetpackcompose.domain.model.Vaccine
+import com.example.livestockjetpackcompose.domain.usecase.DeleteVaccineUseCase
 import com.example.livestockjetpackcompose.domain.usecase.getCowVaccinesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class VaccineListViewModel @Inject constructor(
-    private val getCowVaccinesUseCase: getCowVaccinesUseCase
+    private val getCowVaccinesUseCase: getCowVaccinesUseCase,
+    private val deleteVaccineUseCase: DeleteVaccineUseCase
 ) : ViewModel() {
 
     private val _vaccines = MutableStateFlow<List<Vaccine>?>(null)
@@ -30,27 +32,56 @@ class VaccineListViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = UiState.Loading
 
-            getCowVaccinesUseCase.getCowVaccines(userKey, farmKey, cowKey){ vaccinesList, keysList ->
-                if(vaccinesList != null && keysList != null){
+            getCowVaccinesUseCase.getCowVaccines(
+                userKey,
+                farmKey,
+                cowKey
+            ) { vaccinesList, keysList ->
+                if (vaccinesList != null && keysList != null) {
                     _vaccines.value = vaccinesList
                     _keys.value = keysList
-                }else{
-                    Log.e("VaccineList", "Error al cargar la data de las vacunas")
+                    _uiState.value = UiState.Success
+                } else {
+                    _uiState.value = UiState.Error("Error al cargar las vacunas")
                 }
             }
-
-            _uiState.value = UiState.Idle
         }
     }
 
-    fun deleteSelectedVaccine(userKey: String, farmKey: String, cowKey: String, vaccineKey:String){
+    fun deleteSelectedVaccine(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        vaccineKey: String
+    ) {
         viewModelScope.launch {
-            if (userKey.isNotBlank() && farmKey.isNotBlank() && cowKey.isNotBlank() && vaccineKey.isNotBlank()){
+            if (userKey.isNotBlank() && farmKey.isNotBlank() && cowKey.isNotBlank() && vaccineKey.isNotBlank()) {
                 _uiState.value = UiState.Loading
 
+                // Elimina la vacuna en la base de datos
+                deleteVaccineUseCase.deleteVaccine(userKey, farmKey, cowKey, vaccineKey)
+
+                // Actualiza la lista localmente
+                val currentVaccines = _vaccines.value
+                val currentKeys = _keys.value
+
+                if (currentVaccines != null && currentKeys != null) {
+                    // Encuentra el índice de la vacuna a eliminar
+                    val indexToRemove = currentKeys.indexOf(vaccineKey)
+
+                    if (indexToRemove != -1) {
+                        // Filtra las listas para eliminar la vacuna con la key correspondiente
+                        val updatedVaccines = currentVaccines.toMutableList().apply { removeAt(indexToRemove) }
+                        val updatedKeys = currentKeys.toMutableList().apply { removeAt(indexToRemove) }
+
+                        // Actualiza los StateFlow
+                        _vaccines.value = updatedVaccines
+                        _keys.value = updatedKeys
+                    }
+                }
                 delay(2000)
                 loadVaccines(userKey, farmKey, cowKey)
-                _uiState.value = UiState.Idle
+                _uiState.value = UiState.Success
             }
         }
     }

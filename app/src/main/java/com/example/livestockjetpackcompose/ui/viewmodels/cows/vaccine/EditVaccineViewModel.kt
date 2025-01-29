@@ -3,7 +3,8 @@ package com.example.livestockjetpackcompose.ui.viewmodels.cows.vaccine
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.livestockjetpackcompose.domain.model.Vaccine
-import com.example.livestockjetpackcompose.domain.usecase.RegisterVaccineUseCase
+import com.example.livestockjetpackcompose.domain.usecase.EditVaccineUseCase
+import com.example.livestockjetpackcompose.domain.usecase.GetSingleVaccineUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,8 +13,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterVaccineViewModel @Inject constructor(
-    private val registerVaccineUseCase: RegisterVaccineUseCase
+class EditVaccineViewModel @Inject constructor(
+    private val editVaccineUseCase: EditVaccineUseCase,
+    private val getSingleVaccineUseCase: GetSingleVaccineUseCase
 ) : ViewModel() {
 
     private val _vaccineName = MutableStateFlow("")
@@ -49,18 +51,39 @@ class RegisterVaccineViewModel @Inject constructor(
         _supplier.value = newSupplier
     }
 
-    fun onRegisterVaccine(
+    fun loadVaccineData(userKey: String, farmKey: String, cowKey: String, vaccineKey: String) {
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading
+            getSingleVaccineUseCase.getSingleVaccine(
+                userKey,
+                farmKey,
+                cowKey,
+                vaccineKey
+            ) { vaccine ->
+                if (vaccine != null) {
+                    _vaccineName.value = vaccine.vaccineName
+                    _vaccineCost.value = vaccine.vaccineCost.toString()
+                    _vaccineDate.value = vaccine.date
+                    _supplier.value = vaccine.supplier
+                }
+            }
+            _uiState.value = UiState.Success
+        }
+    }
+
+    fun onEditVaccine(
         userKey: String,
         farmKey: String,
         cowKey: String,
+        vaccineKey: String,
         onRegisterDone: () -> Unit
     ) {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             if (checkData()) {
 
-                var cost:Double = 0.0
-                if(_vaccineCost.value.isNotBlank()){
+                var cost: Double = 0.0
+                if (_vaccineCost.value.isNotBlank()) {
                     cost = _vaccineCost.value.toDouble()
                 }
 
@@ -70,10 +93,12 @@ class RegisterVaccineViewModel @Inject constructor(
                     date = _vaccineDate.value,
                     supplier = _supplier.value
                 )
-                registerVaccineUseCase.registerNewVaccine(userKey, farmKey, cowKey, newVaccine)
+
+                editVaccineUseCase.editVaccine(userKey, farmKey, cowKey, vaccineKey, newVaccine)
+
                 delay(1000)
-                onRegisterDone()
                 _uiState.value = UiState.Idle
+                onRegisterDone()
             } else {
                 _uiState.value = UiState.Error("Debe llenar todos los campos")
             }
