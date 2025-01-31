@@ -41,7 +41,6 @@ import com.example.livestockjetpackcompose.ui.viewmodels.farm.ListFarmViewModel.
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
-
 @Composable
 fun MultiCowScreen(
     modifier: Modifier,

@@ -94,7 +94,7 @@ data class RegisterBreedingCow(
 data class CowResume(
     val userKey: String,
     val farmKey: String,
-    val cowKey:String,
+    val cowKey: String,
     val cowType: CowTypeFilter
 )
 
@@ -117,5 +117,33 @@ data class EditVaccine(
     val userKey: String,
     val farmKey: String,
     val cowKey: String,
-    val vaccineKey:String
+    val vaccineKey: String
+)
+
+@Serializable
+data class LiftingStats(
+    val userKey: String,
+    val farmKey: String,
+    val cowKey: String
+)
+
+@Serializable
+data class RegisterLiftingPerformance(
+    val userKey: String,
+    val farmKey: String,
+    val cowKey: String
+)
+
+@Serializable
+data class InseminationStats(
+    val userKey: String,
+    val farmKey: String,
+    val cowKey: String
+)
+
+@Serializable
+data class RegisterInsemination(
+    val userKey: String,
+    val farmKey: String,
+    val cowKey: String
 )

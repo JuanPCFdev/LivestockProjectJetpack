@@ -59,6 +59,8 @@ fun CowResumeScreen(
     cowKey: String,
     cowTypeFilter: CowTypeFilter,
     navigateToVaccineListHome: () -> Unit,
+    navigateToLiftingStats: () -> Unit,
+    navigateToInsemination: () -> Unit,
     viewModel: CowResumeViewModel = hiltViewModel()
 ) {
     val marking = viewModel.marking.collectAsState()
@@ -147,7 +149,11 @@ fun CowResumeScreen(
                             viewModel.editCow(userKey, farmKey, cowKey, cowType)
                         }
                     },
-                    onVaccinePressed = { navigateToVaccineListHome() })
+                    onVaccinePressed = { navigateToVaccineListHome() },
+                    onWeightPressed = { navigateToLiftingStats() },
+                    onInseminationPressed = { navigateToInsemination() },
+                    cowTypeFilter = cowTypeFilter
+                )
 
             }
         }
@@ -159,7 +165,10 @@ fun CowResumeScreen(
 private fun ButtonsListCow(
     modifier: Modifier,
     onEditPressed: () -> Unit,
-    onVaccinePressed: () -> Unit
+    onVaccinePressed: () -> Unit,
+    onWeightPressed: () -> Unit,
+    onInseminationPressed: () -> Unit,
+    cowTypeFilter: CowTypeFilter
 ) {
     LazyColumn(
         modifier = modifier
@@ -169,30 +178,60 @@ private fun ButtonsListCow(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        item {
-            ButtonCustom(ButtonType.SPECIAL, "Editar") {
-                onEditPressed()
-            }
-        }
-        item {
-            ButtonCustom(ButtonType.SPECIAL, "Consultar Vacunas") {
-                onVaccinePressed()
-            }
-        }
-        item {
-            ButtonCustom(ButtonType.SPECIAL, "Registrar Peso") {
 
-            }
-        }
-        item {
-            ButtonCustom(ButtonType.SPECIAL, "Registrar Parto") {
+        when (cowTypeFilter) {
+            CowTypeFilter.LIFTING -> {
+                item {
+                    ButtonCustom(ButtonType.SPECIAL, "Editar") {
+                        onEditPressed()
+                    }
+                }
+                item {
+                    ButtonCustom(ButtonType.SPECIAL, "Consultar Vacunas") {
+                        onVaccinePressed()
+                    }
+                }
+                item {
+                    ButtonCustom(ButtonType.SPECIAL, "Registrar Peso") {
+                        onWeightPressed()
+                    }
+                }
+                item {
+                    ButtonCustom(ButtonType.SPECIAL, "Reportar Muerte") {
 
+                    }
+                }
             }
-        }
-        item {
-            ButtonCustom(ButtonType.SPECIAL, "Registrar Novedad") {
 
+            CowTypeFilter.BREEADING -> {
+                item {
+                    ButtonCustom(ButtonType.SPECIAL, "Editar") {
+                        onEditPressed()
+                    }
+                }
+                item {
+                    ButtonCustom(ButtonType.SPECIAL, "Consultar Vacunas") {
+                        onVaccinePressed()
+                    }
+                }
+                item {
+                    ButtonCustom(ButtonType.SPECIAL, "Registrar Inseminación") {
+                        onInseminationPressed()
+                    }
+                }
+                item {
+                    ButtonCustom(ButtonType.SPECIAL, "Registrar Parto") {
+
+                    }
+                }
+                item {
+                    ButtonCustom(ButtonType.SPECIAL, "Reportar Muerte") {
+
+                    }
+                }
             }
+
+            else -> Unit
         }
     }
 }

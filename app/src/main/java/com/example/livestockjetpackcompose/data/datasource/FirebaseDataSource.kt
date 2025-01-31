@@ -2,6 +2,8 @@ package com.example.livestockjetpackcompose.data.datasource
 
 import com.example.livestockjetpackcompose.domain.model.Cattle
 import com.example.livestockjetpackcompose.domain.model.Farm
+import com.example.livestockjetpackcompose.domain.model.Insemination
+import com.example.livestockjetpackcompose.domain.model.LiftingPerformance
 import com.example.livestockjetpackcompose.domain.model.User
 import com.example.livestockjetpackcompose.domain.model.Vaccine
 
@@ -64,4 +66,64 @@ interface FirebaseDataSource {
         vaccineKey: String,
         callback: (Vaccine?) -> Unit
     )
+
+    suspend fun getSingleLiftingPerformance(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        liftingKey: String,
+        callback: (LiftingPerformance?) -> Unit
+    ) //Temporalmente inutilizado
+
+    suspend fun registerNewLiftingPerformance(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        liftingPerformance: LiftingPerformance
+    )
+
+    suspend fun deleteLiftingPerformance(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        liftingKey: String
+    )
+
+    suspend fun editLiftingPerformance(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        liftingKey: String,
+        liftingPerformance: LiftingPerformance
+    ) //Temporalmente Inutilizado
+
+    suspend fun getAllLiftingPerformance(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        callback: (List<LiftingPerformance>?, List<String>?) -> Unit
+    )
+
+    suspend fun registerNewInsemination(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        insemination: Insemination
+    )
+
+    suspend fun deleteInsemination(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        inseminationKey: String
+    )
+
+    suspend fun getAllInsemination(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        callback: (List<Insemination>?, List<String>?) -> Unit
+    )
+
+
 }

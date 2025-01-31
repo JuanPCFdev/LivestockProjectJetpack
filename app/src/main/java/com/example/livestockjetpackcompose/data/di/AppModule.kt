@@ -6,6 +6,10 @@ import com.example.livestockjetpackcompose.data.repository.cattle.CattleReposito
 import com.example.livestockjetpackcompose.data.repository.cattle.CattleRepositoryImpl
 import com.example.livestockjetpackcompose.data.repository.farm.FarmRepository
 import com.example.livestockjetpackcompose.data.repository.farm.FarmRepositoryImpl
+import com.example.livestockjetpackcompose.data.repository.insemination.InseminationRepository
+import com.example.livestockjetpackcompose.data.repository.insemination.InseminationRepositoryImpl
+import com.example.livestockjetpackcompose.data.repository.liftingPerformance.LiftingPerformanceImpl
+import com.example.livestockjetpackcompose.data.repository.liftingPerformance.LiftingPerformanceRepository
 import com.example.livestockjetpackcompose.data.repository.user.UserRepository
 import com.example.livestockjetpackcompose.data.repository.user.UserRepositoryImpl
 import com.example.livestockjetpackcompose.data.repository.vaccine.VaccineRepository
@@ -57,8 +61,24 @@ object AppModule {
     @Singleton
     fun provideVaccineRepository(
         firebaseDataSource: FirebaseDataSource
-    ): VaccineRepository{
+    ): VaccineRepository {
         return VaccineRepositoryImpl(firebaseDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLiftingPerformanceRepository(
+        firebaseDataSource: FirebaseDataSource
+    ): LiftingPerformanceRepository {
+        return LiftingPerformanceImpl(firebaseDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideInseminationRepository(
+        firebaseDataSource: FirebaseDataSource
+    ): InseminationRepository {
+        return InseminationRepositoryImpl(firebaseDataSource)
     }
 
 }

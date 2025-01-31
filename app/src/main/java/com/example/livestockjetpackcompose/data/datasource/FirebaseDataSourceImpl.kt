@@ -34,6 +34,8 @@ class FirebaseDataSourceImpl @Inject constructor(
         const val USER_FARM_REF = "farms"
         const val USER_FARM_CATTLE_REF = "cattles"
         const val USER_FARM_CATTLE_VACCINE_REF = "vaccines"
+        const val USER_FARM_CATTLE_PLIFTING_REF = "plifting"
+        const val USER_FARM_CATTLE_INSEMINATION_REF = "inseminationNews"
     }
 
     private val myRef = firebaseDatabase.reference
@@ -626,11 +628,11 @@ class FirebaseDataSourceImpl @Inject constructor(
 
         vaccineReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()){
+                if (snapshot.exists()) {
                     val existingVaccine = snapshot.getValue(Vaccine::class.java)
-                    if (existingVaccine!=null){
+                    if (existingVaccine != null) {
                         callback(existingVaccine)
-                    }else{
+                    } else {
                         callback(null)
                     }
                 }
@@ -642,6 +644,296 @@ class FirebaseDataSourceImpl @Inject constructor(
 
         })
 
+    }
+
+    //LiftingPerformance
+
+    override suspend fun registerNewLiftingPerformance(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        liftingPerformance: LiftingPerformance
+    ) {
+        val userReference = myRef.child(userKey)
+
+        userReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val existingUser = snapshot.getValue(User::class.java)
+                    val farm = farmKey.toInt()
+                    val cow = cowKey.toInt()
+
+                    if (existingUser != null) {
+                        existingUser.farms[farm].cattles[cow].PLifting.add(liftingPerformance)
+                        userReference.setValue(existingUser)
+                    } else {
+                        Log.i("Register New LiftingPerformance", "Error, el usuario no existe")
+                    }
+
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.i(
+                    "Register New LiftingPerformance",
+                    "No se ha logrado registrar el registro de peso correctamente ${error.message}"
+                )
+            }
+
+        })
+    }
+
+    override suspend fun deleteLiftingPerformance(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        liftingKey: String
+    ) {
+        val userReference = myRef.child(userKey)
+
+        userReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val existingUser = snapshot.getValue(User::class.java)
+
+                    if (existingUser != null) {
+                        val liftingRemove =
+                            existingUser.farms[farmKey.toInt()].cattles[cowKey.toInt()].PLifting[liftingKey.toInt()]
+
+                        existingUser.farms[farmKey.toInt()].cattles[cowKey.toInt()].PLifting.remove(
+                            liftingRemove
+                        )
+
+                        userReference.setValue(existingUser)
+                    }
+
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.i(
+                    "Fallo al intentar eliminar performanceLifting con key${liftingKey}, en el usuario ${userKey}, en finca ${farmKey}, en vaca${cowKey}",
+                    error.details
+                )
+            }
+
+        })
+    }
+
+    override suspend fun getSingleLiftingPerformance(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        liftingKey: String,
+        callback: (LiftingPerformance?) -> Unit
+    ) {
+        val vaccineReference = myRef.child(userKey)
+            .child(USER_FARM_REF)
+            .child(farmKey)
+            .child(USER_FARM_CATTLE_REF)
+            .child(cowKey)
+            .child(USER_FARM_CATTLE_PLIFTING_REF)
+            .child(liftingKey)
+
+        vaccineReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val existingPerformanceLifting =
+                        snapshot.getValue(LiftingPerformance::class.java)
+                    if (existingPerformanceLifting != null) {
+                        callback(existingPerformanceLifting)
+                    } else {
+                        callback(null)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback(null)
+            }
+
+        })
+    }
+
+    override suspend fun editLiftingPerformance(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        liftingKey: String,
+        liftingPerformance: LiftingPerformance
+    ) {
+        val userReference = myRef.child(userKey)
+
+        userReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val existingUser = snapshot.getValue(User::class.java)
+                    if (existingUser != null) {
+                        existingUser.farms[farmKey.toInt()].cattles[cowKey.toInt()].PLifting[liftingKey.toInt()].apply {
+                            this.PLDate = liftingPerformance.PLDate
+                            this.PLDiet = liftingPerformance.PLDiet
+                            this.PLWeight = liftingPerformance.PLWeight
+                        }
+                        userReference.setValue(existingUser)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.i("Edit LiftingPerformance Error", error.details)
+            }
+
+        })
+    }
+
+    override suspend fun getAllLiftingPerformance(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        callback: (List<LiftingPerformance>?, List<String>?) -> Unit
+    ) {
+        val userReference = myRef.child(userKey)
+            .child(USER_FARM_REF)
+            .child(farmKey)
+            .child(USER_FARM_CATTLE_REF)
+            .child(cowKey)
+            .child(USER_FARM_CATTLE_PLIFTING_REF)
+
+        userReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val liftingList: MutableList<LiftingPerformance> = mutableListOf()
+                    val liftingKeys: MutableList<String> = mutableListOf()
+                    for (liftingSnapshot in snapshot.children) {
+                        val key = liftingSnapshot.key ?: ""
+                        val liftingPerformance =
+                            liftingSnapshot.getValue(LiftingPerformance::class.java)
+                        if (liftingPerformance != null) {
+                            liftingList.add(liftingPerformance)
+                            liftingKeys.add(key)
+                        }
+                    }
+                    callback(liftingList, liftingKeys)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback(null, null)
+            }
+
+        })
+    }
+
+    //Insemination
+
+    override suspend fun registerNewInsemination(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        insemination: Insemination
+    ) {
+        val userReference = myRef.child(userKey)
+
+        userReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val existingUser = snapshot.getValue(User::class.java)
+                    val farm = farmKey.toInt()
+                    val cow = cowKey.toInt()
+
+                    if (existingUser != null) {
+                        existingUser.farms[farm].cattles[cow].inseminationNews.add(insemination)
+                        userReference.setValue(existingUser)
+                    } else {
+                        Log.i("Register New Insemination", "Error, el usuario no existe")
+                    }
+
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.i(
+                    "Register New Insemination",
+                    "No se ha logrado registrar el registro de inseminacion correctamente ${error.message}"
+                )
+            }
+
+        })
+    }
+
+    override suspend fun deleteInsemination(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        inseminationKey: String
+    ) {
+        val userReference = myRef.child(userKey)
+
+        userReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val existingUser = snapshot.getValue(User::class.java)
+
+                    if (existingUser != null) {
+                        val inseminationRemove =
+                            existingUser.farms[farmKey.toInt()].cattles[cowKey.toInt()].inseminationNews[inseminationKey.toInt()]
+
+                        existingUser.farms[farmKey.toInt()].cattles[cowKey.toInt()].inseminationNews.remove(
+                            inseminationRemove
+                        )
+
+                        userReference.setValue(existingUser)
+                    }
+
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.i(
+                    "Fallo al intentar eliminar performanceLifting con key${inseminationKey}, en el usuario ${userKey}, en finca ${farmKey}, en vaca${cowKey}",
+                    error.details
+                )
+            }
+
+        })
+    }
+
+    override suspend fun getAllInsemination(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        callback: (List<Insemination>?, List<String>?) -> Unit
+    ) {
+        val userReference = myRef.child(userKey)
+            .child(USER_FARM_REF)
+            .child(farmKey)
+            .child(USER_FARM_CATTLE_REF)
+            .child(cowKey)
+            .child(USER_FARM_CATTLE_INSEMINATION_REF)
+
+        userReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val inseminationList: MutableList<Insemination> = mutableListOf()
+                    val inseminationKeys: MutableList<String> = mutableListOf()
+                    for (inseminationSnapshot in snapshot.children) {
+                        val key = inseminationSnapshot.key ?: ""
+                        val insemination =
+                            inseminationSnapshot.getValue(Insemination::class.java)
+                        if (insemination != null) {
+                            inseminationList.add(insemination)
+                            inseminationKeys.add(key)
+                        }
+                    }
+                    callback(inseminationList, inseminationKeys)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback(null, null)
+            }
+
+        })
     }
 
 }
