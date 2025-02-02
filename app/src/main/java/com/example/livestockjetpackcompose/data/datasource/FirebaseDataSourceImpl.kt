@@ -36,6 +36,7 @@ class FirebaseDataSourceImpl @Inject constructor(
         const val USER_FARM_CATTLE_VACCINE_REF = "vaccines"
         const val USER_FARM_CATTLE_PLIFTING_REF = "plifting"
         const val USER_FARM_CATTLE_INSEMINATION_REF = "inseminationNews"
+        const val USER_FARM_CATTLE_PBREADING_REF = "pbreeding"
     }
 
     private val myRef = firebaseDatabase.reference
@@ -926,6 +927,118 @@ class FirebaseDataSourceImpl @Inject constructor(
                         }
                     }
                     callback(inseminationList, inseminationKeys)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback(null, null)
+            }
+
+        })
+    }
+
+    //BREEADING PERFORMANCE
+
+    override suspend fun registerBreeadingPerformance(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        breeadingPerformance: BreedingPerformance
+    ) {
+        val userReference = myRef.child(userKey)
+
+        userReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val existingUser = snapshot.getValue(User::class.java)
+                    val farm = farmKey.toInt()
+                    val cow = cowKey.toInt()
+
+                    if (existingUser != null) {
+                        existingUser.farms[farm].cattles[cow].PBreeding.add(breeadingPerformance)
+                        userReference.setValue(existingUser)
+                    } else {
+                        Log.i("Register New Breading performance", "Error, el usuario no existe")
+                    }
+
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.i(
+                    "Register New Breading performance",
+                    "No se ha logrado registrar el registro de inseminacion correctamente ${error.message}"
+                )
+            }
+
+        })
+    }
+
+    override suspend fun deleteBreeadingPerformance(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        breeadingPerformanceKey: String
+    ) {
+        val userReference = myRef.child(userKey)
+
+        userReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val existingUser = snapshot.getValue(User::class.java)
+
+                    if (existingUser != null) {
+                        val performanceBreadingRemove =
+                            existingUser.farms[farmKey.toInt()].cattles[cowKey.toInt()].PBreeding[breeadingPerformanceKey.toInt()]
+
+                        existingUser.farms[farmKey.toInt()].cattles[cowKey.toInt()].PBreeding.remove(
+                            performanceBreadingRemove
+                        )
+
+                        userReference.setValue(existingUser)
+                    }
+
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.i(
+                    "Fallo al intentar eliminar performanceLifting con key${breeadingPerformanceKey}, en el usuario ${userKey}, en finca ${farmKey}, en vaca${cowKey}",
+                    error.details
+                )
+            }
+
+        })
+    }
+
+    override suspend fun getAllBreeadingPerformance(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        callback: (List<BreedingPerformance>?, List<String>?) -> Unit
+    ) {
+        val userReference = myRef.child(userKey)
+            .child(USER_FARM_REF)
+            .child(farmKey)
+            .child(USER_FARM_CATTLE_REF)
+            .child(cowKey)
+            .child(USER_FARM_CATTLE_PBREADING_REF)
+
+        userReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val performanceBreadingList: MutableList<BreedingPerformance> = mutableListOf()
+                    val performanceBreadingKeys: MutableList<String> = mutableListOf()
+                    for (performanceBreadingSnapshot in snapshot.children) {
+                        val key = performanceBreadingSnapshot.key ?: ""
+                        val performanceBreading =
+                            performanceBreadingSnapshot.getValue(BreedingPerformance::class.java)
+                        if (performanceBreading != null) {
+                            performanceBreadingList.add(performanceBreading)
+                            performanceBreadingKeys.add(key)
+                        }
+                    }
+                    callback(performanceBreadingList, performanceBreadingKeys)
                 }
             }
 

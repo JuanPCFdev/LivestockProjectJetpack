@@ -1,5 +1,6 @@
 package com.example.livestockjetpackcompose.data.datasource
 
+import com.example.livestockjetpackcompose.domain.model.BreedingPerformance
 import com.example.livestockjetpackcompose.domain.model.Cattle
 import com.example.livestockjetpackcompose.domain.model.Farm
 import com.example.livestockjetpackcompose.domain.model.Insemination
@@ -125,5 +126,25 @@ interface FirebaseDataSource {
         callback: (List<Insemination>?, List<String>?) -> Unit
     )
 
+    suspend fun registerBreeadingPerformance(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        breeadingPerformance: BreedingPerformance
+    )
+
+    suspend fun deleteBreeadingPerformance(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        breeadingPerformanceKey: String
+    )
+
+    suspend fun getAllBreeadingPerformance(
+        userKey: String,
+        farmKey: String,
+        cowKey: String,
+        callback: (List<BreedingPerformance>?, List<String>?) -> Unit
+    )
 
 }

@@ -1,4 +1,4 @@
-package com.example.livestockjetpackcompose.ui.screens.cows.breeading
+package com.example.livestockjetpackcompose.ui.screens.cows.breeading.born
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,34 +34,35 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.livestockjetpackcompose.R
-import com.example.livestockjetpackcompose.domain.model.Insemination
+import com.example.livestockjetpackcompose.domain.model.BreedingPerformance
+import com.example.livestockjetpackcompose.ui.theme.background_app
 import com.example.livestockjetpackcompose.ui.utils.ButtonCustom
 import com.example.livestockjetpackcompose.ui.utils.ButtonType
 import com.example.livestockjetpackcompose.ui.utils.Title
-import com.example.livestockjetpackcompose.ui.theme.background_app
-import com.example.livestockjetpackcompose.ui.viewmodels.cows.breeading.InseminationStatsViewModel
+import com.example.livestockjetpackcompose.ui.viewmodels.cows.breeading.BreadingPerformanceStatsViewModel
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
 @Composable
-fun InseminationStatsScreen(
+fun BreadingPerformanceStats(
     modifier: Modifier,
     userKey: String,
     farmKey: String,
     cowKey: String,
-    navigateToRegisterInsemination: () -> Unit,
-    viewModel: InseminationStatsViewModel = hiltViewModel()
+    navigateToRegisterBreadingPerformance: () -> Unit,
+    viewModel: BreadingPerformanceStatsViewModel = hiltViewModel()
 ) {
 
-    val inseminationList = viewModel.inseminationList.collectAsState()
-    val keyList = viewModel.keys.collectAsState()
+    val pBreadingList = viewModel.pBeadingList.collectAsState()
+    val keys = viewModel.keys.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
 
+
     var showDialog by remember { mutableStateOf(false) }
-    var selectedInsemination by remember { mutableStateOf<Insemination?>(null) }
+    var selectedBreadingPerformance by remember { mutableStateOf<BreedingPerformance?>(null) }
 
     LaunchedEffect(userKey) {
-        viewModel.loadInseminationData(userKey, farmKey, cowKey)
+        viewModel.loadBreadingPerformanceData(userKey, farmKey, cowKey)
     }
 
     Column(
@@ -72,16 +73,16 @@ fun InseminationStatsScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Title(Modifier.weight(1f), "Estadísticas Vaca 112233")
+        Title(Modifier.weight(1f), "Registros de Partos")
         CardInseminationList(
             modifier = Modifier.weight(2f),
-            inseminationList = inseminationList.value,
-            keys = keyList.value,
-            inseminationSelected = { inseminationDate ->
+            breadingPerformanceList = pBreadingList.value,
+            keys = keys.value,
+            breadingPerformanceSelected = { date ->
                 val selected =
-                    inseminationList.value?.find { it.inseminationDate == inseminationDate }
+                    pBreadingList.value?.find { it.PBDate == date }
                 if (selected != null) {
-                    selectedInsemination = selected
+                    selectedBreadingPerformance = selected
                     showDialog = true
                 }
             },
@@ -90,60 +91,49 @@ fun InseminationStatsScreen(
             farmKey = farmKey,
             cowKey = cowKey
         )
-        StatsBreeadingCard(
-            modifier = Modifier.weight(3f),
-            textData = "" //Last implementation
-        )
 
         when (uiState) {
-            is InseminationStatsViewModel.UiState.Error -> {
-                Text(
-                    text = (uiState as InseminationStatsViewModel.UiState.Error).message,
-                    color = Color.Red,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-            }
-
-            InseminationStatsViewModel.UiState.Loading -> CircularProgressIndicator()
+            is BreadingPerformanceStatsViewModel.UiState.Error -> TODO()
+            BreadingPerformanceStatsViewModel.UiState.Loading -> CircularProgressIndicator()
             else -> Unit
         }
 
-        RegisterInseminationButton(Modifier.weight(1f)) {
-            navigateToRegisterInsemination()
+        RegisterBreadingPerformanceButton(Modifier.weight(1f)) {
+            navigateToRegisterBreadingPerformance()
         }
 
-        if (showDialog && selectedInsemination != null) {
-            InseminationDetailsDialog(
-                insemination = selectedInsemination!!,
+        if (showDialog && selectedBreadingPerformance != null) {
+            BreeadingPerformanceDetailsDialog(
+                breadingP = selectedBreadingPerformance!!,
                 onDismiss = { showDialog = false }
             )
         }
+
     }
 }
-
 
 @Composable
 private fun CardInseminationList(
     modifier: Modifier,
-    inseminationList: List<Insemination>?,
+    breadingPerformanceList: List<BreedingPerformance>?,
     keys: List<String>?,
-    inseminationSelected: (String) -> Unit,
-    viewModel: InseminationStatsViewModel,
+    breadingPerformanceSelected: (String) -> Unit,
+    viewModel: BreadingPerformanceStatsViewModel,
     userKey: String,
     farmKey: String,
     cowKey: String
 ) {
-
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
             .padding(vertical = 8.dp, horizontal = 11.dp)
             .background(background_app)
     ) {
-        if (inseminationList != null && keys != null) {
-            val mixList = inseminationList.zip(keys)
+        if (breadingPerformanceList != null && keys != null) {
+            val mixList = breadingPerformanceList.zip(keys)
 
-            items(mixList) { (insemination, key) ->
+            items(mixList) { (breadingPerformance, key) ->
+
                 val swipeLeft = SwipeAction(
                     icon = {
                         Icon(
@@ -157,16 +147,18 @@ private fun CardInseminationList(
                     background = Color.Red,
                     isUndo = true,
                     onSwipe = {
-                        viewModel.deleteInsemination(userKey, farmKey, cowKey, key)
+                        viewModel.deleteBreadingPerformanceData(userKey, farmKey, cowKey, key)
                     }
                 )
 
                 SwipeableActionsBox(endActions = listOf(swipeLeft)) {
-                    InseminationItem(inseminationDate = insemination.inseminationDate) {
-                        inseminationSelected(insemination.inseminationDate)
+                    BreadingPerformanceItem(breadingPerformanceDate = breadingPerformance.PBDate) {
+                        breadingPerformanceSelected(breadingPerformance.PBDate)
                     }
                 }
+
             }
+
         } else {
             item {
                 Text(
@@ -179,8 +171,9 @@ private fun CardInseminationList(
     }
 }
 
+
 @Composable
-private fun InseminationItem(inseminationDate: String, onClickedItem: () -> Unit) {
+private fun BreadingPerformanceItem(breadingPerformanceDate: String, onClickedItem: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -197,7 +190,7 @@ private fun InseminationItem(inseminationDate: String, onClickedItem: () -> Unit
         ) {
             Text(
                 modifier = Modifier.padding(12.dp),
-                text = inseminationDate,
+                text = breadingPerformanceDate,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp
             )
@@ -207,8 +200,8 @@ private fun InseminationItem(inseminationDate: String, onClickedItem: () -> Unit
 
 
 @Composable
-private fun InseminationDetailsDialog(
-    insemination: Insemination,
+private fun BreeadingPerformanceDetailsDialog(
+    breadingP: BreedingPerformance,
     onDismiss: () -> Unit
 ) {
     AlertDialog(
@@ -219,17 +212,27 @@ private fun InseminationDetailsDialog(
         text = {
             Column {
                 Text(
-                    text = "Fecha: ${insemination.inseminationDate}",
+                    text = "Fecha: ${breadingP.PBDate}",
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
                 Text(
-                    text = "Descripción: ${insemination.descOfInsemination}",
+                    text = "Peso Inicial: ${breadingP.PBInitialWeight}",
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
                 Text(
-                    text = "Origen del esperma: ${insemination.spermOrigin}",
+                    text = "Cria enferma? : ${if (breadingP.PBSick) "Si" else "No"}",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+                Text(
+                    text = "Cria muerta? : ${if (breadingP.PBDeath) "Si" else "No"}",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+                Text(
+                    text = "Dieta: ${breadingP.PBDiet}",
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
@@ -244,23 +247,7 @@ private fun InseminationDetailsDialog(
 }
 
 @Composable
-private fun StatsBreeadingCard(modifier: Modifier, textData:String) {
-    Card(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(vertical = 5.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp
-        )
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Text(textData, modifier = Modifier.padding(5.dp))
-        }
-    }
-}
-
-@Composable
-private fun RegisterInseminationButton(modifier: Modifier, onButtonPressed: () -> Unit) {
+private fun RegisterBreadingPerformanceButton(modifier: Modifier, onButtonPressed: () -> Unit) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         ButtonCustom(ButtonType.SPECIAL, "Registrar Inseminación") {
             onButtonPressed()

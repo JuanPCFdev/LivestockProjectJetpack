@@ -147,3 +147,17 @@ data class RegisterInsemination(
     val farmKey: String,
     val cowKey: String
 )
+
+@Serializable
+data class BreadingStats(
+    val userKey: String,
+    val farmKey: String,
+    val cowKey: String
+)
+
+@Serializable
+data class RegisterBreadingPerformance(
+    val userKey: String,
+    val farmKey: String,
+    val cowKey: String
+)

@@ -6,13 +6,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.livestockjetpackcompose.domain.model.Insemination
 import com.example.livestockjetpackcompose.domain.utils.CowTypeFilter
 import com.example.livestockjetpackcompose.ui.screens.cows.CowHomeScreen
 import com.example.livestockjetpackcompose.ui.screens.cows.CowResumeScreen
 import com.example.livestockjetpackcompose.ui.screens.cows.MultiCowScreen
 import com.example.livestockjetpackcompose.ui.screens.cows.RegisterCowScreen
-import com.example.livestockjetpackcompose.ui.screens.cows.breeading.InseminationStatsScreen
+import com.example.livestockjetpackcompose.ui.screens.cows.breeading.born.BreadingPerformanceStats
+import com.example.livestockjetpackcompose.ui.screens.cows.breeading.born.RegisterBornCowScreen
+import com.example.livestockjetpackcompose.ui.screens.cows.breeading.insemination.InseminationStatsScreen
 import com.example.livestockjetpackcompose.ui.screens.cows.breeading.insemination.RegisterInseminationScreen
 import com.example.livestockjetpackcompose.ui.screens.cows.lifting.LiftingStatsScreen
 import com.example.livestockjetpackcompose.ui.screens.cows.lifting.weight.RegisterWeightScreen
@@ -445,6 +446,15 @@ fun NavigationWrapper(modifier: Modifier) {
                             cowKey = navItems.cowKey
                         )
                     )
+                },
+                navigateToBreadingStats = {
+                    navController.navigate(
+                        BreadingStats(
+                            userKey = navItems.userKey,
+                            farmKey = navItems.farmKey,
+                            cowKey = navItems.cowKey
+                        )
+                    )
                 }
             )
 
@@ -567,6 +577,42 @@ fun NavigationWrapper(modifier: Modifier) {
             val navItems = navBackStackEntry.toRoute<RegisterInsemination>()
 
             RegisterInseminationScreen(
+                modifier = modifier,
+                userKey = navItems.userKey,
+                farmKey = navItems.farmKey,
+                cowKey = navItems.cowKey,
+                onRegisterDone = {
+                    navController.popBackStack()
+                }
+            )
+
+        }
+
+        composable<BreadingStats> { navBackStackEntry ->
+            val navItems = navBackStackEntry.toRoute<RegisterInsemination>()
+
+            BreadingPerformanceStats(
+                modifier = modifier,
+                userKey = navItems.userKey,
+                farmKey = navItems.farmKey,
+                cowKey = navItems.cowKey,
+                navigateToRegisterBreadingPerformance = {
+                    navController.navigate(
+                        RegisterBreadingPerformance(
+                            userKey = navItems.userKey,
+                            farmKey = navItems.farmKey,
+                            cowKey = navItems.cowKey
+                        )
+                    )
+                }
+            )
+
+        }
+
+        composable<RegisterBreadingPerformance> { navBackStackEntry ->
+            val navItems = navBackStackEntry.toRoute<RegisterInsemination>()
+
+            RegisterBornCowScreen(
                 modifier = modifier,
                 userKey = navItems.userKey,
                 farmKey = navItems.farmKey,

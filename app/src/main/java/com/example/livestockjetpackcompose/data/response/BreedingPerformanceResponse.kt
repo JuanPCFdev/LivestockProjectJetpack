@@ -14,7 +14,6 @@ data class BreedingPerformanceResponse(
     fun toDomain(): BreedingPerformance {
         return BreedingPerformance(
             PBDate = PBDate,
-            PBDateInsemination = PBDateInsemination,
             PBInitialWeight = PBInitialWeight,
             PBSick = PBSick,
             PBDeath = PBDeath,

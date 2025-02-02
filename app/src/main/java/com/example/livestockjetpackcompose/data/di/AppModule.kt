@@ -2,6 +2,8 @@ package com.example.livestockjetpackcompose.data.di
 
 import com.example.livestockjetpackcompose.data.datasource.FirebaseDataSource
 import com.example.livestockjetpackcompose.data.datasource.FirebaseDataSourceImpl
+import com.example.livestockjetpackcompose.data.repository.breadingPerformance.BreadingPerformanceImpl
+import com.example.livestockjetpackcompose.data.repository.breadingPerformance.BreadingPerformanceRepository
 import com.example.livestockjetpackcompose.data.repository.cattle.CattleRepository
 import com.example.livestockjetpackcompose.data.repository.cattle.CattleRepositoryImpl
 import com.example.livestockjetpackcompose.data.repository.farm.FarmRepository
@@ -79,6 +81,14 @@ object AppModule {
         firebaseDataSource: FirebaseDataSource
     ): InseminationRepository {
         return InseminationRepositoryImpl(firebaseDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBreadingPerformanceRepository(
+        firebaseDataSource: FirebaseDataSource
+    ): BreadingPerformanceRepository {
+        return BreadingPerformanceImpl(firebaseDataSource)
     }
 
 }
