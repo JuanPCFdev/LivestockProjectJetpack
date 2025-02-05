@@ -154,7 +154,11 @@ private fun ListItem(farmName: String, onClickedItem: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         onClick = {
             onClickedItem()
-        }
+        },
+        colors = CardDefaults.cardColors(
+            contentColor = Color.White,
+            containerColor = Color.White
+        )
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -165,7 +169,8 @@ private fun ListItem(farmName: String, onClickedItem: () -> Unit) {
                 modifier = Modifier.padding(12.dp),
                 text = farmName,
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp
+                fontSize = 24.sp,
+                color = Color.Black
             )
         }
     }

@@ -410,7 +410,14 @@ private fun StateOutlinedTextField(stateText: String, onStateChange: (String) ->
                 focusedTextColor = Color.Black,
                 unfocusedTextColor = Color.Black,
                 cursorColor = border_text_field,
-                focusedBorderColor = border_text_field
+                focusedBorderColor = border_text_field,
+                disabledTextColor = Color.Black,
+                disabledBorderColor = Color.Black,
+                disabledPrefixColor = Color.Black,
+                disabledLabelColor = Color.Black,
+                disabledPlaceholderColor = Color.Black,
+                focusedPlaceholderColor = Color.Cyan,
+                unfocusedPlaceholderColor = Color.Black
             )
         )
 
@@ -460,7 +467,14 @@ private fun SexOutlinedTextField(sexText: String, onSexChange: (String) -> Unit)
                 focusedTextColor = Color.Black,
                 unfocusedTextColor = Color.Black,
                 cursorColor = border_text_field,
-                focusedBorderColor = border_text_field
+                focusedBorderColor = border_text_field,
+                disabledTextColor = Color.Black,
+                disabledBorderColor = Color.Black,
+                disabledPrefixColor = Color.Black,
+                disabledLabelColor = Color.Black,
+                disabledPlaceholderColor = Color.Black,
+                focusedPlaceholderColor = Color.Cyan,
+                unfocusedPlaceholderColor = Color.Black
             )
         )
 
@@ -532,7 +546,14 @@ private fun BreedOutlinedTextField(breedText: String, onBreedChange: (String) ->
                 focusedTextColor = Color.Black,
                 unfocusedTextColor = Color.Black,
                 cursorColor = border_text_field,
-                focusedBorderColor = border_text_field
+                focusedBorderColor = border_text_field,
+                disabledTextColor = Color.Black,
+                disabledBorderColor = Color.Black,
+                disabledPrefixColor = Color.Black,
+                disabledLabelColor = Color.Black,
+                disabledPlaceholderColor = Color.Black,
+                focusedPlaceholderColor = Color.Cyan,
+                unfocusedPlaceholderColor = Color.Black
             )
         )
 
@@ -580,8 +601,15 @@ private fun BirthdateTextField(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedTextColor = Color.Black,
                 unfocusedTextColor = Color.Black,
-                cursorColor = Color.Gray,
-                focusedBorderColor = Color.Gray
+                cursorColor = border_text_field,
+                focusedBorderColor = border_text_field,
+                disabledTextColor = Color.Black,
+                disabledBorderColor = Color.Black,
+                disabledPrefixColor = Color.Black,
+                disabledLabelColor = Color.Black,
+                disabledPlaceholderColor = Color.Black,
+                focusedPlaceholderColor = Color.Cyan,
+                unfocusedPlaceholderColor = Color.Black
             )
         )
     }

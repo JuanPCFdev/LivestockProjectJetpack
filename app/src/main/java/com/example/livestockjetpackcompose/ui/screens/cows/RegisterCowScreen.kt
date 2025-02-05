@@ -263,7 +263,7 @@ private fun CheckBoxCastratedCow(castrated: Boolean, onCastratedChange: (Boolean
             .padding(5.dp)
     ) {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text("¿La vaca ha sido castrada?")
+            Text("¿La vaca ha sido castrada?", color = Color.Black)
             Checkbox(
                 checked = castrated,
                 onCheckedChange = onCastratedChange,
@@ -311,7 +311,14 @@ private fun StateOutlinedTextField(stateText: String, onStateChange: (String) ->
                 focusedTextColor = Color.Black,
                 unfocusedTextColor = Color.Black,
                 cursorColor = border_text_field,
-                focusedBorderColor = border_text_field
+                focusedBorderColor = border_text_field,
+                disabledTextColor = Color.Black,
+                disabledBorderColor = Color.Black,
+                disabledPrefixColor = Color.Black,
+                disabledLabelColor = Color.Black,
+                disabledPlaceholderColor = Color.Black,
+                focusedPlaceholderColor = Color.Cyan,
+                unfocusedPlaceholderColor = Color.Black
             )
         )
 
@@ -361,7 +368,14 @@ private fun SexOutlinedTextField(sexText: String, onSexChange: (String) -> Unit)
                 focusedTextColor = Color.Black,
                 unfocusedTextColor = Color.Black,
                 cursorColor = border_text_field,
-                focusedBorderColor = border_text_field
+                focusedBorderColor = border_text_field,
+                disabledBorderColor = Color.Black,
+                disabledPrefixColor = Color.Black,
+                disabledLabelColor = Color.Black,
+                disabledPlaceholderColor = Color.Black,
+                focusedPlaceholderColor = Color.Cyan,
+                unfocusedPlaceholderColor = Color.Black,
+                disabledTextColor = Color.Black
             )
         )
 
@@ -433,7 +447,14 @@ private fun BreedOutlinedTextField(breedText: String, onBreedChange: (String) ->
                 focusedTextColor = Color.Black,
                 unfocusedTextColor = Color.Black,
                 cursorColor = border_text_field,
-                focusedBorderColor = border_text_field
+                focusedBorderColor = border_text_field,
+                disabledBorderColor = Color.Black,
+                disabledPrefixColor = Color.Black,
+                disabledLabelColor = Color.Black,
+                disabledPlaceholderColor = Color.Black,
+                focusedPlaceholderColor = Color.Cyan,
+                unfocusedPlaceholderColor = Color.Black,
+                disabledTextColor = Color.Black
             )
         )
 
@@ -482,7 +503,14 @@ private fun BirthdateTextField(
                 focusedTextColor = Color.Black,
                 unfocusedTextColor = Color.Black,
                 cursorColor = Color.Gray,
-                focusedBorderColor = Color.Gray
+                focusedBorderColor = Color.Gray,
+                disabledBorderColor = Color.Black,
+                disabledPrefixColor = Color.Black,
+                disabledLabelColor = Color.Black,
+                disabledPlaceholderColor = Color.Black,
+                focusedPlaceholderColor = Color.Cyan,
+                unfocusedPlaceholderColor = Color.Black,
+                disabledTextColor = Color.Black
             )
         )
     }

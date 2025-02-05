@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.livestockjetpackcompose.ui.theme.background_app
+import com.example.livestockjetpackcompose.ui.theme.border_text_field
 import com.example.livestockjetpackcompose.ui.utils.ButtonCustom
 import com.example.livestockjetpackcompose.ui.utils.ButtonType
 import com.example.livestockjetpackcompose.ui.utils.OutlinedTextFieldCustom
@@ -185,8 +186,15 @@ private fun DateTextField(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedTextColor = Color.Black,
                 unfocusedTextColor = Color.Black,
-                cursorColor = Color.Gray,
-                focusedBorderColor = Color.Gray
+                cursorColor = border_text_field,
+                focusedBorderColor = border_text_field,
+                disabledTextColor = Color.Black,
+                disabledBorderColor = Color.Black,
+                disabledPrefixColor = Color.Black,
+                disabledLabelColor = Color.Black,
+                disabledPlaceholderColor = Color.Black,
+                focusedPlaceholderColor = Color.Cyan,
+                unfocusedPlaceholderColor = Color.Black
             )
         )
     }

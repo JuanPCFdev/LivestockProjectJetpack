@@ -35,6 +35,7 @@ import com.example.livestockjetpackcompose.ui.utils.OutlinedTextFieldCustom
 import com.example.livestockjetpackcompose.ui.utils.TextFieldType
 import com.example.livestockjetpackcompose.ui.utils.Title
 import com.example.livestockjetpackcompose.ui.theme.background_app
+import com.example.livestockjetpackcompose.ui.theme.border_text_field
 import com.example.livestockjetpackcompose.ui.viewmodels.cows.vaccine.EditVaccineViewModel
 import com.example.livestockjetpackcompose.ui.viewmodels.cows.vaccine.RegisterVaccineViewModel
 import java.util.Calendar
@@ -190,8 +191,15 @@ private fun DateTextField(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedTextColor = Color.Black,
                 unfocusedTextColor = Color.Black,
-                cursorColor = Color.Gray,
-                focusedBorderColor = Color.Gray
+                cursorColor = border_text_field,
+                focusedBorderColor = border_text_field,
+                disabledTextColor = Color.Black,
+                disabledBorderColor = Color.Black,
+                disabledPrefixColor = Color.Black,
+                disabledLabelColor = Color.Black,
+                disabledPlaceholderColor = Color.Black,
+                focusedPlaceholderColor = Color.Cyan,
+                unfocusedPlaceholderColor = Color.Black
             )
         )
     }

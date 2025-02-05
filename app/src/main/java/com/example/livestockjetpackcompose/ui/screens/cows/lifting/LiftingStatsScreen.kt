@@ -199,7 +199,11 @@ private fun WeightItem(weightDate: String, onClickedItem: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         onClick = {
             onClickedItem()
-        }
+        },
+        colors = CardDefaults.cardColors(
+            contentColor = Color.White,
+            containerColor = Color.White
+        )
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -210,7 +214,8 @@ private fun WeightItem(weightDate: String, onClickedItem: () -> Unit) {
                 modifier = Modifier.padding(12.dp),
                 text = weightDate,
                 fontWeight = FontWeight.Bold,
-                fontSize = 28.sp
+                fontSize = 28.sp,
+                color = Color.Black
             )
         }
     }

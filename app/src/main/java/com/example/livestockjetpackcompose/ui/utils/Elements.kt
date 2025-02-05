@@ -13,6 +13,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -78,7 +79,14 @@ fun OutlinedTextFieldCustom(
                     focusedTextColor = Color.Black,
                     unfocusedTextColor = Color.Black,
                     cursorColor = border_text_field,
-                    focusedBorderColor = border_text_field
+                    focusedBorderColor = border_text_field,
+                    disabledTextColor = Color.Black,
+                    disabledBorderColor = Color.Black,
+                    disabledPrefixColor = Color.Black,
+                    disabledLabelColor = Color.Black,
+                    disabledPlaceholderColor = Color.Black,
+                    focusedPlaceholderColor = Color.Cyan,
+                    unfocusedPlaceholderColor = Color.Black
                 )
             )
         }
@@ -102,7 +110,14 @@ fun OutlinedTextFieldCustom(
                     focusedTextColor = Color.Black,
                     unfocusedTextColor = Color.Black,
                     cursorColor = border_text_field,
-                    focusedBorderColor = border_text_field
+                    focusedBorderColor = border_text_field,
+                    disabledTextColor = Color.Black,
+                    disabledBorderColor = Color.Black,
+                    disabledPrefixColor = Color.Black,
+                    disabledLabelColor = Color.Black,
+                    disabledPlaceholderColor = Color.Black,
+                    focusedPlaceholderColor = Color.Cyan,
+                    unfocusedPlaceholderColor = Color.Black
                 ),
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
@@ -138,7 +153,14 @@ fun OutlinedTextFieldCustom(
                     focusedTextColor = Color.Black,
                     unfocusedTextColor = Color.Black,
                     cursorColor = border_text_field,
-                    focusedBorderColor = border_text_field
+                    focusedBorderColor = border_text_field,
+                    disabledTextColor = Color.Black,
+                    disabledBorderColor = Color.Black,
+                    disabledPrefixColor = Color.Black,
+                    disabledLabelColor = Color.Black,
+                    disabledPlaceholderColor = Color.Black,
+                    focusedPlaceholderColor = Color.Cyan,
+                    unfocusedPlaceholderColor = Color.Black
                 )
             )
         }
@@ -146,7 +168,7 @@ fun OutlinedTextFieldCustom(
         TextFieldType.DISABLED -> {
             OutlinedTextField(
                 value = text,
-                onValueChange = { onValueChange(it) },
+                onValueChange = { },
                 enabled = false,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -160,7 +182,14 @@ fun OutlinedTextFieldCustom(
                     focusedTextColor = Color.Black,
                     unfocusedTextColor = Color.Black,
                     cursorColor = border_text_field,
-                    focusedBorderColor = border_text_field
+                    focusedBorderColor = border_text_field,
+                    disabledTextColor = Color.Black,
+                    disabledBorderColor = Color.Black,
+                    disabledPrefixColor = Color.Black,
+                    disabledLabelColor = Color.Black,
+                    disabledPlaceholderColor = Color.Black,
+                    focusedPlaceholderColor = Color.Cyan,
+                    unfocusedPlaceholderColor = Color.Black
                 )
             )
         }
@@ -275,7 +304,11 @@ fun CardItem(title: String, icon: Int, onCardSelected: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         onClick = {
             onCardSelected()
-        }
+        },
+        colors = CardDefaults.cardColors(
+            contentColor = Color.White,
+            containerColor = Color.White
+        )
     ) {
         Row(
             modifier = Modifier
