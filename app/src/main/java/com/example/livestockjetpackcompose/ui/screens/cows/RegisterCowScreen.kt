@@ -1,6 +1,5 @@
 package com.example.livestockjetpackcompose.ui.screens.cows
 
-import android.app.DatePickerDialog
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -45,10 +43,9 @@ import com.example.livestockjetpackcompose.ui.utils.TextFieldType
 import com.example.livestockjetpackcompose.ui.utils.Title
 import com.example.livestockjetpackcompose.ui.theme.background_app
 import com.example.livestockjetpackcompose.ui.theme.border_text_field
+import com.example.livestockjetpackcompose.ui.utils.CustomBreedOutlinedTextField
+import com.example.livestockjetpackcompose.ui.utils.DateOutlinedTextFieldCustom
 import com.example.livestockjetpackcompose.ui.viewmodels.cows.RegisterCowViewModel
-import com.example.livestockjetpackcompose.ui.viewmodels.farm.RegisterFarmViewModel.UiState
-import com.example.livestockjetpackcompose.ui.viewmodels.user.EditUserViewModel
-import java.util.Calendar
 
 @Composable
 fun RegisterCowScreen(
@@ -203,7 +200,11 @@ private fun BodyRegisterCow(
                 )
             }
             item {
-                BirthdateTextField(context, birthdate, onBirthdateChange)
+                DateOutlinedTextFieldCustom(
+                    context = context,
+                    birthdateText = birthdate,
+                    onBirthdateChange = onBirthdateChange
+                )
             }
             item {
                 OutlinedTextFieldCustom(
@@ -211,7 +212,6 @@ private fun BodyRegisterCow(
                     text = weight,
                     onValueChange = onWeightChange
                 )
-
             }
             item {
                 OutlinedTextFieldCustom(
@@ -221,7 +221,7 @@ private fun BodyRegisterCow(
                 )
             }
             item {
-                BreedOutlinedTextField(breed, onBreedChange)
+                CustomBreedOutlinedTextField(breed, onBreedChange)
             }
             item {
                 StateOutlinedTextField(state, onStateChange)
@@ -395,151 +395,4 @@ private fun SexOutlinedTextField(sexText: String, onSexChange: (String) -> Unit)
             }
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun BreedOutlinedTextField(breedText: String, onBreedChange: (String) -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
-    val options = listOf(
-        "Brahman",
-        "Gyr",
-        "Holstein",
-        "Jersey",
-        "Normando",
-        "Romosinuano",
-        "Blanco Orejinegro",
-        "Velásquez",
-        "Criollo Caqueteño",
-        "San Martinero",
-        "Costeño con Cuernos",
-        "Hartón del Valle",
-        "Lucerna",
-        "Chino Santandereano",
-        "Criollo Casanare",
-        "Blonda de Aquitania",
-        "Charolesa",
-        "Fleckvieh",
-        "Frisona",
-        "Limusina",
-        "Parda"
-    )
-
-    Box(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        OutlinedTextField(
-            value = breedText,
-            onValueChange = {},
-            enabled = false,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 10.dp)
-                .clickable {
-                    expanded = true
-                },
-            placeholder = { Text("Raza") },
-            singleLine = true,
-            maxLines = 1,
-            minLines = 1,
-            shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
-                cursorColor = border_text_field,
-                focusedBorderColor = border_text_field,
-                disabledBorderColor = Color.Black,
-                disabledPrefixColor = Color.Black,
-                disabledLabelColor = Color.Black,
-                disabledPlaceholderColor = Color.Black,
-                focusedPlaceholderColor = Color.Cyan,
-                unfocusedPlaceholderColor = Color.Black,
-                disabledTextColor = Color.Black
-            )
-        )
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .widthIn(min = 150.dp, max = 400.dp)
-                .heightIn(min = 100.dp, max = 400.dp)
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(option) },
-                    onClick = {
-                        onBreedChange(option)
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun BirthdateTextField(
-    context: Context,
-    birthdateText: String,
-    onBirthdateChange: (String) -> Unit
-) {
-    Box(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        OutlinedTextField(
-            value = birthdateText,
-            onValueChange = {},
-            enabled = false,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 10.dp)
-                .clickable { showDatePicker(context, onBirthdateChange) },
-            placeholder = { Text("Fecha de Nacimiento") },
-            singleLine = true,
-            shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
-                cursorColor = Color.Gray,
-                focusedBorderColor = Color.Gray,
-                disabledBorderColor = Color.Black,
-                disabledPrefixColor = Color.Black,
-                disabledLabelColor = Color.Black,
-                disabledPlaceholderColor = Color.Black,
-                focusedPlaceholderColor = Color.Cyan,
-                unfocusedPlaceholderColor = Color.Black,
-                disabledTextColor = Color.Black
-            )
-        )
-    }
-}
-
-private fun showDatePicker(
-    context: Context,
-    onBirthdateChange: (String) -> Unit
-) {
-    val calendar = Calendar.getInstance()
-    val currentYear = calendar.get(Calendar.YEAR)
-    val currentMonth = calendar.get(Calendar.MONTH)
-    val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
-
-    val minDate = Calendar.getInstance().apply {
-        add(Calendar.YEAR, -2)
-    }.timeInMillis
-
-    DatePickerDialog(
-        context,
-        { _, year, month, dayOfMonth ->
-            val formattedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth)
-            onBirthdateChange(formattedDate)
-        },
-        currentYear,
-        currentMonth,
-        currentDay
-    ).apply {
-        datePicker.maxDate = calendar.timeInMillis
-        datePicker.minDate = minDate
-    }.show()
 }
