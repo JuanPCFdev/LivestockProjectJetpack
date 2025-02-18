@@ -1,24 +1,16 @@
 package com.example.livestockjetpackcompose.ui.screens.cows.vaccine
 
-import android.app.DatePickerDialog
 import android.content.Context
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -29,16 +21,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.livestockjetpackcompose.ui.theme.background_app
 import com.example.livestockjetpackcompose.ui.utils.ButtonCustom
 import com.example.livestockjetpackcompose.ui.utils.ButtonType
+import com.example.livestockjetpackcompose.ui.utils.DateOutlinedTextFieldCustom
 import com.example.livestockjetpackcompose.ui.utils.OutlinedTextFieldCustom
 import com.example.livestockjetpackcompose.ui.utils.TextFieldType
 import com.example.livestockjetpackcompose.ui.utils.Title
-import com.example.livestockjetpackcompose.ui.theme.background_app
-import com.example.livestockjetpackcompose.ui.theme.border_text_field
 import com.example.livestockjetpackcompose.ui.viewmodels.cows.vaccine.EditVaccineViewModel
-import com.example.livestockjetpackcompose.ui.viewmodels.cows.vaccine.RegisterVaccineViewModel
-import java.util.Calendar
 
 @Composable
 fun EditVaccineScreen(
@@ -137,11 +127,7 @@ private fun CardBody(
                 )
             }
             item {
-                DateTextField(
-                    context = context,
-                    dateText = date,
-                    onDateChange = onDateChange
-                )
+                DateOutlinedTextFieldCustom(context,date,onDateChange)
             }
             item {
                 OutlinedTextFieldCustom(
@@ -165,70 +151,4 @@ private fun ButtonsVaccine(modifier: Modifier, onButonPressed: () -> Unit) {
             onButonPressed()
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun DateTextField(
-    context: Context,
-    dateText: String,
-    onDateChange: (String) -> Unit
-) {
-    Box(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        OutlinedTextField(
-            value = dateText,
-            onValueChange = {},
-            enabled = false,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 10.dp)
-                .clickable { showDatePicker(context, onDateChange) },
-            placeholder = { Text("Fecha de Administración") },
-            singleLine = true,
-            shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
-                cursorColor = border_text_field,
-                focusedBorderColor = border_text_field,
-                disabledTextColor = Color.Black,
-                disabledBorderColor = Color.Black,
-                disabledPrefixColor = Color.Black,
-                disabledLabelColor = Color.Black,
-                disabledPlaceholderColor = Color.Black,
-                focusedPlaceholderColor = Color.Cyan,
-                unfocusedPlaceholderColor = Color.Black
-            )
-        )
-    }
-}
-
-private fun showDatePicker(
-    context: Context,
-    onBirthdateChange: (String) -> Unit
-) {
-    val calendar = Calendar.getInstance()
-    val currentYear = calendar.get(Calendar.YEAR)
-    val currentMonth = calendar.get(Calendar.MONTH)
-    val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
-
-    val minDate = Calendar.getInstance().apply {
-        add(Calendar.YEAR, -2)
-    }.timeInMillis
-
-    DatePickerDialog(
-        context,
-        { _, year, month, dayOfMonth ->
-            val formattedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth)
-            onBirthdateChange(formattedDate)
-        },
-        currentYear,
-        currentMonth,
-        currentDay
-    ).apply {
-        datePicker.maxDate = calendar.timeInMillis
-        datePicker.minDate = minDate
-    }.show()
 }
