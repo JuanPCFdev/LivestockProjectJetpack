@@ -1,11 +1,9 @@
 package com.example.livestockjetpackcompose.ui.screens.farm
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,15 +21,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.livestockjetpackcompose.R
 import com.example.livestockjetpackcompose.domain.model.Farm
 import com.example.livestockjetpackcompose.ui.theme.background_app
 import com.example.livestockjetpackcompose.ui.utils.ButtonCustom
 import com.example.livestockjetpackcompose.ui.utils.ButtonType
+import com.example.livestockjetpackcompose.ui.utils.SimpleMultipurposeCard
 import com.example.livestockjetpackcompose.ui.utils.Title
 import com.example.livestockjetpackcompose.ui.viewmodels.farm.ListFarmViewModel
 import com.example.livestockjetpackcompose.ui.viewmodels.farm.ListFarmViewModel.UiState
@@ -131,7 +128,7 @@ private fun BodyItemsList(
                     )
 
                     SwipeableActionsBox(endActions = listOf(swipeLeft)) {
-                        ListItem(farmName = farm.nameFarm) {
+                        SimpleMultipurposeCard(text = farm.nameFarm) {
                             farmSelected(farmKey)
                         }
                     }
@@ -141,37 +138,6 @@ private fun BodyItemsList(
                     Text(text = "Aun no hay fincas registradas")
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun ListItem(farmName: String, onClickedItem: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        onClick = {
-            onClickedItem()
-        },
-        colors = CardDefaults.cardColors(
-            contentColor = Color.White,
-            containerColor = Color.White
-        )
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                modifier = Modifier.padding(12.dp),
-                text = farmName,
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-                color = Color.Black
-            )
         }
     }
 }

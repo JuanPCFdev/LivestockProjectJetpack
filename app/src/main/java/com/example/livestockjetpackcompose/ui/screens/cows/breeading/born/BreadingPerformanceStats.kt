@@ -12,8 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -38,6 +36,7 @@ import com.example.livestockjetpackcompose.domain.model.BreedingPerformance
 import com.example.livestockjetpackcompose.ui.theme.background_app
 import com.example.livestockjetpackcompose.ui.utils.ButtonCustom
 import com.example.livestockjetpackcompose.ui.utils.ButtonType
+import com.example.livestockjetpackcompose.ui.utils.SimpleMultipurposeCard
 import com.example.livestockjetpackcompose.ui.utils.Title
 import com.example.livestockjetpackcompose.ui.viewmodels.cows.breeading.BreadingPerformanceStatsViewModel
 import me.saket.swipe.SwipeAction
@@ -152,8 +151,10 @@ private fun CardInseminationList(
                 )
 
                 SwipeableActionsBox(endActions = listOf(swipeLeft)) {
-                    BreadingPerformanceItem(breadingPerformanceDate = breadingPerformance.PBDate) {
-                        breadingPerformanceSelected(breadingPerformance.PBDate)
+                    SimpleMultipurposeCard(text = breadingPerformance.PBDate) {
+                        breadingPerformanceSelected(
+                            breadingPerformance.PBDate
+                        )
                     }
                 }
 
@@ -170,39 +171,6 @@ private fun CardInseminationList(
         }
     }
 }
-
-
-@Composable
-private fun BreadingPerformanceItem(breadingPerformanceDate: String, onClickedItem: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        onClick = {
-            onClickedItem()
-        },
-        colors = CardDefaults.cardColors(
-            contentColor = Color.White,
-            containerColor = Color.White
-        )
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                modifier = Modifier.padding(12.dp),
-                text = breadingPerformanceDate,
-                fontWeight = FontWeight.Bold,
-                fontSize = 28.sp,
-                color = Color.Black
-            )
-        }
-    }
-}
-
 
 @Composable
 private fun BreeadingPerformanceDetailsDialog(
